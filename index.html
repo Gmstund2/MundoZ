@@ -44,9 +44,22 @@
       accessToken: token
     });
 
+    const ciudades = [
+      { nombre: "París", lat: 48.8566, lon: 2.3522 },
+      { nombre: "Tokio", lat: 35.6895, lon: 139.6917 },
+      { nombre: "Nueva York", lat: 40.7128, lon: -74.0060 },
+      { nombre: "Ámsterdam", lat: 52.3676, lon: 4.9041 },
+      { nombre: "Buenos Aires", lat: -34.6037, lon: -58.3816 },
+      { nombre: "Sídney", lat: -33.8688, lon: 151.2093 },
+      { nombre: "Barcelona", lat: 41.3851, lon: 2.1734 },
+      { nombre: "Berlín", lat: 52.52, lon: 13.405 },
+      { nombre: "Valencia", lat: 10.173, lon: -68.01 },
+    ];
+
     async function loadClosestImage() {
-      const lat = -60 + Math.random() * 120;   // de -60 a +60
-      const lon = -150 + Math.random() * 300;  // de -150 a +150
+      const ciudad = ciudades[Math.floor(Math.random() * ciudades.length)];
+      const lat = ciudad.lat + (Math.random() - 0.5) * 0.05; // +-0.025
+      const lon = ciudad.lon + (Math.random() - 0.5) * 0.05;
 
       const apiUrl = `https://graph.mapillary.com/images?closeto=${lon},${lat}&limit=1&fields=id&access_token=${token}`;
 
@@ -59,17 +72,17 @@
           viewer.moveTo(imageId);
         } else {
           console.warn("No se encontró imagen, reintentando...");
-          loadClosestImage(); // Reintenta si no hay resultados
+          loadClosestImage();
         }
       } catch (error) {
         console.error("Error al buscar imagen:", error);
-        alert("Ocurrió un error al cargar la imagen.");
+        alert("Error al cargar la imagen. Intenta de nuevo.");
       }
     }
 
     document.getElementById('nextBtn').addEventListener('click', loadClosestImage);
 
-    // Carga inicial
+    // Cargar imagen inicial
     loadClosestImage();
   </script>
 </body>
