@@ -2,66 +2,32 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>StreetWorld Finals</title>
-  <link rel="stylesheet" href="mapillary.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visor Mapillary - StreetWorld</title>
+  <link rel="stylesheet" href="mapillary.css">
   <style>
     html, body {
       margin: 0;
       padding: 0;
       height: 100%;
-      background: #000;
+      background-color: #000;
     }
     #mly {
       width: 100%;
       height: 100vh;
     }
-    #loadBtn {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      z-index: 1000;
-      background: rgba(0,0,0,0.8);
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 6px;
-      font-size: 16px;
-      cursor: pointer;
-    }
   </style>
 </head>
 <body>
-  <button id="loadBtn">Nueva ubicación</button>
   <div id="mly">Cargando visor...</div>
 
   <script src="mapillary.min.js"></script>
   <script>
-    const imageIds = [
-      "497631854800421",  // Nueva York, EE.UU.
-      "1567502368653336", // Tokio, Japón
-      "173674407401693",  // Barcelona, España
-      "262538091404226",  // París, Francia
-      "372330161524718",  // Berlín, Alemania
-      "736014851577651",  // Londres, Reino Unido
-      "755346194154180",  // Roma, Italia
-      "315248510871582",  // Ámsterdam, Países Bajos
-      "403542198202364",  // Río de Janeiro, Brasil
-      "453521114812605"   // Buenos Aires, Argentina
-    ];
-
     const viewer = new mapillary.Viewer({
       container: 'mly',
-      accessToken: 'MLY|9573834739339060|d4dddfbf3167fab2e8b6aa9f14eeade2'
+      accessToken: 'MLY|9573834739339060|d4dddfbf3167fab2e8b6aa9f14eeade2',
+      imageId: '497631854800421' // Imagen real y navegable (Nueva York)
     });
-
-    function loadRandomImage() {
-      const randomId = imageIds[Math.floor(Math.random() * imageIds.length)];
-      viewer.moveTo(randomId);
-    }
-
-    loadRandomImage(); // Carga inicial
-    document.getElementById('loadBtn').addEventListener('click', loadRandomImage);
   </script>
 </body>
 </html>
