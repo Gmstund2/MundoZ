@@ -39,15 +39,15 @@
   <script>
     const viewer = new mapillary.Viewer({
       container: 'mly',
-      accessToken: 'MLY|8198176930306992|ad0194ab4525c7307d775db6cfd1ae98',
-      imageId: '369413935383932' // Imagen inicial
+      accessToken: 'MLY|9573834739339060|d4dddfbf3167fab2e8b6aa9f14eeade2',
+      imageId: '369413935383932' // Imagen inicial de prueba
     });
 
     document.getElementById('loadBtn').addEventListener('click', async () => {
       const lon = -70 + Math.random() * 140;
       const lat = -40 + Math.random() * 80;
 
-      const res = await fetch(`https://graph.mapillary.com/images?access_token=MLY|8198176930306992|ad0194ab4525c7307d775db6cfd1ae98&fields=id&limit=1&closeto=${lon},${lat}`);
+      const res = await fetch(`https://graph.mapillary.com/images?access_token=MLY|9573834739339060|d4dddfbf3167fab2e8b6aa9f14eeade2&fields=id&limit=1&closeto=${lon},${lat}`);
       const data = await res.json();
 
       if (data?.data?.length > 0) {
