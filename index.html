@@ -39,11 +39,10 @@
   <script>
     const viewer = new mapillary.Viewer({
       container: 'mly',
-      accessToken: 'MLY|9573834739339060|d4dddfbf3167fab2e8b6aa9f14eeade2',
-      imageId: '369413935383932' // Imagen inicial de prueba
+      accessToken: 'MLY|9573834739339060|d4dddfbf3167fab2e8b6aa9f14eeade2'
     });
 
-    document.getElementById('loadBtn').addEventListener('click', async () => {
+    async function loadRandomImage() {
       const lon = -70 + Math.random() * 140;
       const lat = -40 + Math.random() * 80;
 
@@ -56,7 +55,13 @@
       } else {
         alert("No se encontró imagen, intenta otra vez.");
       }
-    });
+    }
+
+    // Cargar una imagen al iniciar la página
+    loadRandomImage();
+
+    // Cargar nueva imagen al hacer clic
+    document.getElementById('loadBtn').addEventListener('click', loadRandomImage);
   </script>
 </body>
 </html>
