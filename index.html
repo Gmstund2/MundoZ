@@ -39,7 +39,8 @@
   <script>
     const viewer = new mapillary.Viewer({
       container: 'mly',
-      accessToken: 'MLY|9573834739339060|d4dddfbf3167fab2e8b6aa9f14eeade2'
+      accessToken: 'MLY|9573834739339060|d4dddfbf3167fab2e8b6aa9f14eeade2',
+      imageId: '601540579113206' // Imagen segura conocida
     });
 
     async function loadRandomImage() {
@@ -57,10 +58,6 @@
       }
     }
 
-    // Cargar una imagen al iniciar la página
-    loadRandomImage();
-
-    // Cargar nueva imagen al hacer clic
     document.getElementById('loadBtn').addEventListener('click', loadRandomImage);
   </script>
 </body>
