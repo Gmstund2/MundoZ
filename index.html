@@ -37,27 +37,33 @@
 
   <script src="mapillary.min.js"></script>
   <script>
+    const imageIds = [
+      "369413935383932", // USA
+      "601540579113206", // Alemania
+      "586518973794176", // Francia
+      "538937419156798", // España
+      "580658337363100", // Países Bajos
+      "301510824342706", // Italia
+      "221974640663147", // Japón
+      "410483112279646", // Brasil
+      "301402222731027", // Argentina
+      "193930484098984"  // Australia
+    ];
+
     const viewer = new mapillary.Viewer({
       container: 'mly',
-      accessToken: 'MLY|9573834739339060|d4dddfbf3167fab2e8b6aa9f14eeade2',
-      imageId: '601540579113206' // Imagen segura conocida
+      accessToken: 'MLY|9573834739339060|d4dddfbf3167fab2e8b6aa9f14eeade2'
     });
 
-    async function loadRandomImage() {
-      const lon = -70 + Math.random() * 140;
-      const lat = -40 + Math.random() * 80;
-
-      const res = await fetch(`https://graph.mapillary.com/images?access_token=MLY|9573834739339060|d4dddfbf3167fab2e8b6aa9f14eeade2&fields=id&limit=1&closeto=${lon},${lat}`);
-      const data = await res.json();
-
-      if (data?.data?.length > 0) {
-        const imageId = data.data[0].id;
-        viewer.moveTo(imageId);
-      } else {
-        alert("No se encontró imagen, intenta otra vez.");
-      }
+    function loadRandomImage() {
+      const randomId = imageIds[Math.floor(Math.random() * imageIds.length)];
+      viewer.moveTo(randomId);
     }
 
+    // Al iniciar
+    loadRandomImage();
+
+    // Al presionar el botón
     document.getElementById('loadBtn').addEventListener('click', loadRandomImage);
   </script>
 </body>
