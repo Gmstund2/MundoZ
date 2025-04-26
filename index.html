@@ -4,18 +4,17 @@
   <meta charset="UTF-8" />
   <title>StreetWorld - Intro</title>
 
-  <!-- Fuente épica tipo videojuego -->
+  <!-- Fuente tipo videojuego -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
 
   <style>
-    /* Fondo de la página */
+    /* Fondo completo */
     html, body {
       margin: 0;
       padding: 0;
       height: 100%;
       background: url('assets/file_000000006a9c61f6b4b441eb288c9353.png') no-repeat center center fixed;
       background-size: cover;
-      background-position: center center;
       font-family: 'Orbitron', sans-serif;
     }
 
@@ -32,12 +31,12 @@
     /* Carta de personaje */
     .card {
       position: relative;
-      width: 690px; /* Tamaño grande */
+      width: 690px;
       height: 820px;
       margin-bottom: 30px;
     }
 
-    /* Personaje (debajo del marco) */
+    /* Personaje y marco */
     .card img.personaje {
       position: absolute;
       top: 20%;
@@ -45,16 +44,15 @@
       width: 76%;
       height: 65%;
       object-fit: contain;
-      z-index: 1; /* Personaje detrás */
+      z-index: 1;
     }
 
-    /* Marco (encima del personaje) */
     .card img.marco {
       position: absolute;
       width: 100%;
       height: 100%;
       object-fit: contain;
-      z-index: 2; /* Marco arriba */
+      z-index: 2;
     }
 
     /* Texto de personaje */
@@ -66,7 +64,7 @@
       font-size: 24px;
     }
 
-    /* Botón Jugar */
+    /* Botón Jugar centrado */
     .start-btn {
       padding: 30px 60px;
       font-size: 44px;
@@ -78,11 +76,35 @@
       box-shadow: 0 0 30px #00FFCE88;
       font-family: 'Orbitron', sans-serif;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
+      margin-top: 20px;
     }
 
     .start-btn:hover {
       transform: scale(1.1);
       box-shadow: 0 0 40px #00FFCE;
+    }
+
+    /* Botón Ranking flotante */
+    .ranking-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      padding: 12px 24px;
+      font-size: 20px;
+      background: #00FFCE;
+      color: #111;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 0 15px #00FFCE88;
+      font-family: 'Orbitron', sans-serif;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      z-index: 5;
+    }
+
+    .ranking-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 25px #00FFCE;
     }
   </style>
 
@@ -90,8 +112,11 @@
 
 <body>
 
+<!-- Botón Ranking arriba a la derecha -->
+<button class="ranking-btn" onclick="window.location.href='ranking.html'">Ranking</button>
+
 <div class="container">
-  <!-- Carta del personaje -->
+  <!-- Carta de personaje -->
   <div class="card">
     <img class="personaje" src="assets/file_00000000248461f6a1fc0bc827ff9912.png" alt="Personaje 1">
     <img class="marco" src="assets/file_00000000171861f6b9476d9c532695f5.png" alt="Marco Bronce">
@@ -103,7 +128,7 @@
     <p>“Las calles susurran… y yo escucho.”</p>
   </div>
 
-  <!-- Botón para iniciar -->
+  <!-- Botón Jugar -->
   <button class="start-btn" onclick="window.location.href='juego.html'">Jugar</button>
 
 </div>
