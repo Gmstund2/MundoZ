@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <title>StreetWorld - Login</title>
 
-  <!-- Fuente tipo videojuego Orbitron -->
+  <!-- Fuente Orbitron para botones e inputs -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
 
   <style>
@@ -19,92 +19,10 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      min-height: 100vh;
     }
 
-    /* Contenedor principal */
-    .container {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      gap: 30px;
-      margin-top: 50px;
-    }
-
-    /* Inputs grandes */
-    .input-field {
-      width: 500px;
-      font-size: 28px;
-      padding: 20px 10px;
-      background: transparent;
-      border: none;
-      border-bottom: 4px solid #00FFCE;
-      color: #00FFCE;
-      outline: none;
-      text-align: center;
-    }
-
-    /* Botones principales */
-    .btn {
-      padding: 24px 60px;
-      font-size: 34px;
-      background: #00FFCE;
-      color: #111;
-      border: none;
-      border-radius: 16px;
-      cursor: pointer;
-      box-shadow: 0 0 20px #00FFCE88;
-      font-family: 'Orbitron', sans-serif;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      width: 400px;
-    }
-
-    .btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 35px #00FFCE;
-    }
-
-    /* Botón secundario (Invitado) */
-    .btn-secundario {
-      padding: 20px 50px;
-      font-size: 28px;
-      background: transparent;
-      color: #00FFCE;
-      border: 3px solid #00FFCE;
-      border-radius: 14px;
-      cursor: pointer;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      width: 380px;
-    }
-
-    .btn-secundario:hover {
-      transform: scale(1.05);
-      background: #00FFCE22;
-    }
-
-    /* Botón Clasificatoria */
-    .btn-clasificatoria {
-      margin-top: 100px;
-      padding: 26px 70px;
-      font-size: 36px;
-      background: #00FFCE;
-      color: #111;
-      border: none;
-      border-radius: 18px;
-      cursor: pointer;
-      box-shadow: 0 0 20px #00FFCE88;
-      font-family: 'Orbitron', sans-serif;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      width: 420px;
-    }
-
-    .btn-clasificatoria:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 40px #00FFCE;
-    }
-
-    /* Botones flotantes */
+    /* Botones flotantes arriba */
     .ranking-btn, .perfil-btn {
       position: fixed;
       top: 50px;
@@ -128,15 +46,108 @@
       left: 40px;
     }
 
-    /* Footer */
+    /* Contenedor central */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 30px;
+      margin-top: 30px;
+    }
+
+    /* Div para inputs + login + registro */
+    .login-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 40px;
+      border-radius: 20px;
+    }
+
+    /* Inputs */
+    .input-field {
+      width: 500px;
+      font-size: 28px;
+      padding: 20px 10px;
+      background: transparent;
+      border: none;
+      border-bottom: 4px solid #00FFCE;
+      color: #00FFCE;
+      outline: none;
+      text-align: center;
+    }
+
+    /* Botones */
+    .btn {
+      padding: 24px 60px;
+      font-size: 34px;
+      background: #00FFCE;
+      color: #111;
+      border: none;
+      border-radius: 16px;
+      cursor: pointer;
+      box-shadow: 0 0 20px #00FFCE88;
+      font-family: 'Orbitron', sans-serif;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      width: 400px;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 35px #00FFCE;
+    }
+
+    /* Botón secundario */
+    .btn-secundario {
+      padding: 20px 50px;
+      font-size: 28px;
+      background: transparent;
+      color: #00FFCE;
+      border: 3px solid #00FFCE;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      width: 380px;
+    }
+
+    .btn-secundario:hover {
+      transform: scale(1.05);
+      background: #00FFCE22;
+    }
+
+    /* Botón Clasificatoria */
+    .btn-clasificatoria {
+      margin-top: 50px;
+      padding: 26px 70px;
+      font-size: 36px;
+      background: #00FFCE;
+      color: #111;
+      border: none;
+      border-radius: 18px;
+      cursor: pointer;
+      box-shadow: 0 0 20px #00FFCE88;
+      font-family: 'Orbitron', sans-serif;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      width: 420px;
+    }
+
+    .btn-clasificatoria:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 40px #00FFCE;
+    }
+
+    /* Footer bonito */
     footer {
-      width: 100%;
-      background: #ffffff;
+      background: #fff;
       color: #111;
       text-align: center;
-      padding: 30px 10px;
+      padding: 30px 20px;
       font-size: 18px;
-      font-family: 'Orbitron', sans-serif;
+      font-family: Arial, sans-serif;
     }
 
     .footer-redes {
@@ -153,21 +164,24 @@
 <button class="ranking-btn" onclick="window.location.href='ranking.html'">Ranking</button>
 <button class="perfil-btn" onclick="window.location.href='perfil.html'">Perfil</button>
 
-<!-- Contenido central -->
-<div class="container">
-  <!-- Inputs -->
-  <input type="text" class="input-field" placeholder="Nombre de Usuario">
-  <input type="password" class="input-field" placeholder="Contraseña">
+<!-- Contenido principal -->
+<div class="main-content">
 
-  <!-- Botones -->
-  <button class="btn" onclick="window.location.href='juego.html'">Registrarse</button>
+  <!-- Caja de login -->
+  <div class="login-box">
+    <input type="text" class="input-field" placeholder="Nombre de Usuario">
+    <input type="password" class="input-field" placeholder="Contraseña">
+    <button class="btn" onclick="window.location.href='juego.html'">Login</button>
+    <button class="btn" onclick="window.location.href='registro.html'">Registrarse</button>
+  </div>
+
+  <!-- Botones sueltos -->
   <button class="btn-secundario" onclick="window.location.href='juego.html'">Jugar como Invitado</button>
-
-  <!-- Botón Clasificatoria -->
   <button class="btn-clasificatoria" onclick="window.location.href='clasificatoria.html'">Clasificatoria</button>
+
 </div>
 
-<!-- Pie de página -->
+<!-- Footer -->
 <footer>
   StreetWorld Finals © 2025 | contacto@streetworld.com
   <div class="footer-redes">
@@ -176,4 +190,4 @@
 </footer>
 
 </body>
-</html>
+  </html>
