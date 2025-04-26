@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <title>StreetWorld - Intro</title>
 
-  <!-- Fuente tipo videojuego -->
+  <!-- Fuente épica tipo videojuego -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
 
   <style>
@@ -19,7 +19,7 @@
       font-family: 'Orbitron', sans-serif;
     }
 
-    /* Contenedor principal */
+    /* Contenedor central */
     .container {
       width: 100%;
       height: 100%;
@@ -29,26 +29,15 @@
       align-items: center;
     }
 
-    /* Carta agrandada */
-.card img.marco {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  z-index: 1;
-}
+    /* Carta de personaje */
+    .card {
+      position: relative;
+      width: 690px; /* Tamaño grande del marco */
+      height: 920px;
+      margin-bottom: 30px;
+    }
 
-.card img.personaje {
-  position: absolute;
-  top: 12%;
-  left: 12%;
-  width: 76%;
-  height: 76%;
-  object-fit: contain;
-  z-index: 2;
-  }
-
-    /* Marco agrandado */
+    /* Marco (más grande que el personaje) */
     .card img.marco {
       position: absolute;
       width: 100%;
@@ -57,13 +46,13 @@
       z-index: 1;
     }
 
-    /* Personaje agrandado */
+    /* Personaje dentro del marco */
     .card img.personaje {
       position: absolute;
-      top: 5%;
-      left: 5%;
-      width: 90%;
-      height: 90%;
+      top: 12%;
+      left: 12%;
+      width: 76%;
+      height: 76%;
       object-fit: contain;
       z-index: 2;
     }
@@ -77,10 +66,10 @@
       font-size: 24px;
     }
 
-    /* Botón más grande */
+    /* Botón Jugar */
     .start-btn {
-      padding: 30px 60px; /* 2x tamaño anterior */
-      font-size: 44px;     /* 2x tamaño anterior */
+      padding: 30px 60px; /* Botón más grande */
+      font-size: 44px;
       background: #00FFCE;
       color: #111;
       border: none;
@@ -102,19 +91,19 @@
 <body>
 
 <div class="container">
-  <!-- Carta -->
+  <!-- Carta del personaje -->
   <div class="card">
     <img class="marco" src="assets/file_00000000171861f6b9476d9c532695f5.png" alt="Marco Bronce">
     <img class="personaje" src="assets/file_00000000248461f6a1fc0bc827ff9912.png" alt="Personaje 1">
   </div>
 
-  <!-- Info del personaje -->
+  <!-- Información del personaje -->
   <div class="info">
     <h2>Kael - Vagabundo del Viento</h2>
     <p>“Las calles susurran… y yo escucho.”</p>
   </div>
 
-  <!-- Botón Jugar más grande -->
+  <!-- Botón para iniciar -->
   <button class="start-btn" onclick="window.location.href='juego.html'">Jugar</button>
 
 </div>
