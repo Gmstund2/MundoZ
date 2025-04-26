@@ -46,7 +46,7 @@
       left: 40px;
     }
 
-    /* Contenedor central */
+    /* Contenedor principal */
     .main-content {
       flex: 1;
       display: flex;
@@ -68,13 +68,14 @@
 
     /* Caja login */
     .login-box {
+      background: #ffffff;
+      padding: 80px 50px; /* Más alto para que no toquen los bordes */
+      border-radius: 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 30px;
-      background: rgba(0, 0, 0, 0.6);
-      padding: 50px;
-      border-radius: 20px;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
     }
 
     /* Inputs */
@@ -82,7 +83,7 @@
       width: 500px;
       font-size: 28px;
       padding: 20px 10px;
-      background: #fff;
+      background: transparent;
       border: none;
       border-bottom: 4px solid #00FFCE;
       color: #00FFCE;
@@ -149,7 +150,7 @@
       box-shadow: 0 0 40px #00FFCE;
     }
 
-    /* Footer bonito y grande */
+    /* Footer grande */
     footer {
       background: #ffffff;
       color: #111;
