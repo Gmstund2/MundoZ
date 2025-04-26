@@ -4,11 +4,11 @@
   <meta charset="UTF-8" />
   <title>StreetWorld - Intro</title>
 
-  <!-- Fuente épica tipo videojuego -->
+  <!-- Fuente tipo videojuego -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
 
   <style>
-    /* Fondo completo de la página */
+    /* Fondo de la página */
     html, body {
       margin: 0;
       padding: 0;
@@ -19,7 +19,7 @@
       font-family: 'Orbitron', sans-serif;
     }
 
-    /* Contenedor central */
+    /* Contenedor principal */
     .container {
       width: 100%;
       height: 100%;
@@ -29,15 +29,15 @@
       align-items: center;
     }
 
-    /* Carta de personaje */
+    /* Carta agrandada */
     .card {
       position: relative;
-      width: 300px;
-      height: 400px;
-      margin-bottom: 20px;
+      width: 690px;   /* 300px * 2.3 = 690px */
+      height: 920px;  /* 400px * 2.3 = 920px */
+      margin-bottom: 30px;
     }
 
-    /* Marco de la carta */
+    /* Marco agrandado */
     .card img.marco {
       position: absolute;
       width: 100%;
@@ -46,42 +46,43 @@
       z-index: 1;
     }
 
-    /* Personaje sobre el marco */
+    /* Personaje agrandado */
     .card img.personaje {
       position: absolute;
-      top: 10%;
-      left: 10%;
-      width: 80%;
-      height: 80%;
+      top: 5%;
+      left: 5%;
+      width: 90%;
+      height: 90%;
       object-fit: contain;
       z-index: 2;
     }
 
-    /* Información debajo de la carta */
+    /* Texto de personaje */
     .info {
       text-align: center;
       color: #ffffff;
       text-shadow: 0 0 5px #000;
-      margin-bottom: 30px;
+      margin-bottom: 40px;
+      font-size: 24px;
     }
 
-    /* Botón "Jugar" */
+    /* Botón más grande */
     .start-btn {
-      padding: 15px 30px;
-      font-size: 22px;
+      padding: 30px 60px; /* 2x tamaño anterior */
+      font-size: 44px;     /* 2x tamaño anterior */
       background: #00FFCE;
       color: #111;
       border: none;
-      border-radius: 12px;
+      border-radius: 18px;
       cursor: pointer;
-      box-shadow: 0 0 20px #00FFCE88;
+      box-shadow: 0 0 30px #00FFCE88;
       font-family: 'Orbitron', sans-serif;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
     .start-btn:hover {
       transform: scale(1.1);
-      box-shadow: 0 0 30px #00FFCE;
+      box-shadow: 0 0 40px #00FFCE;
     }
   </style>
 
@@ -96,13 +97,13 @@
     <img class="personaje" src="assets/file_00000000248461f6a1fc0bc827ff9912.png" alt="Personaje 1">
   </div>
 
-  <!-- Info personaje -->
+  <!-- Info del personaje -->
   <div class="info">
     <h2>Kael - Vagabundo del Viento</h2>
     <p>“Las calles susurran… y yo escucho.”</p>
   </div>
 
-  <!-- Botón para ir al juego -->
+  <!-- Botón Jugar más grande -->
   <button class="start-btn" onclick="window.location.href='juego.html'">Jugar</button>
 
 </div>
