@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8" />
   <title>StreetWorld - Tu personaje</title>
@@ -26,20 +26,21 @@
       background: #00ffcc;
       color: #000;
       border: none;
-      padding: 15px 30px;
-      font-size: 20px;
-      border-radius: 10px;
+      padding: 16px 32px;
+      font-size: 22px;
+      border-radius: 12px;
       cursor: pointer;
       z-index: 10;
+      box-shadow: 0 0 10px #00ffcc88;
     }
   </style>
 </head>
 <body>
   <div id="canvas-container">
-    <button id="startBtn" onclick="window.location.href='index.html'">Jugar</button>
+    <button id="startBtn" onclick="window.location.href='juego.html'">Jugar</button>
   </div>
 
-  <!-- Three.js y GLTFLoader desde CDN -->
+  <!-- Three.js y GLTFLoader -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.153.0/build/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.153.0/examples/js/loaders/GLTFLoader.js"></script>
 
