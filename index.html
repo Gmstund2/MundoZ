@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <title>StreetWorld - Login</title>
 
-  <!-- Fuente Orbitron tipo videojuego -->
+  <!-- Fuente tipo videojuego Orbitron -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
 
   <style>
@@ -23,12 +23,13 @@
 
     /* Contenedor principal */
     .container {
-      width: 100%;
+      flex: 1;
       display: flex;
       flex-direction: column;
+      justify-content: center;
       align-items: center;
-      margin-top: 50px;
       gap: 30px;
+      margin-top: 50px;
     }
 
     /* Inputs grandes */
@@ -44,7 +45,7 @@
       text-align: center;
     }
 
-    /* Botones grandes */
+    /* Botones principales */
     .btn {
       padding: 24px 60px;
       font-size: 34px;
@@ -64,7 +65,7 @@
       box-shadow: 0 0 35px #00FFCE;
     }
 
-    /* Botón secundario */
+    /* Botón secundario (Invitado) */
     .btn-secundario {
       padding: 20px 50px;
       font-size: 28px;
@@ -82,7 +83,7 @@
       background: #00FFCE22;
     }
 
-    /* Botón Clasificatoria grande */
+    /* Botón Clasificatoria */
     .btn-clasificatoria {
       margin-top: 100px;
       padding: 26px 70px;
@@ -103,7 +104,7 @@
       box-shadow: 0 0 40px #00FFCE;
     }
 
-    /* Botones flotantes Perfil y Ranking */
+    /* Botones flotantes */
     .ranking-btn, .perfil-btn {
       position: fixed;
       top: 50px;
@@ -130,12 +131,17 @@
     /* Footer */
     footer {
       width: 100%;
-      background: #fff;
-      text-align: center;
-      padding: 20px 10px;
-      font-size: 16px;
+      background: #ffffff;
       color: #111;
+      text-align: center;
+      padding: 30px 10px;
+      font-size: 18px;
       font-family: 'Orbitron', sans-serif;
+    }
+
+    .footer-redes {
+      margin-top: 10px;
+      font-size: 24px;
     }
   </style>
 
@@ -147,6 +153,7 @@
 <button class="ranking-btn" onclick="window.location.href='ranking.html'">Ranking</button>
 <button class="perfil-btn" onclick="window.location.href='perfil.html'">Perfil</button>
 
+<!-- Contenido central -->
 <div class="container">
   <!-- Inputs -->
   <input type="text" class="input-field" placeholder="Nombre de Usuario">
@@ -156,13 +163,16 @@
   <button class="btn" onclick="window.location.href='juego.html'">Registrarse</button>
   <button class="btn-secundario" onclick="window.location.href='juego.html'">Jugar como Invitado</button>
 
-  <!-- Botón Clasificatoria grande -->
+  <!-- Botón Clasificatoria -->
   <button class="btn-clasificatoria" onclick="window.location.href='clasificatoria.html'">Clasificatoria</button>
 </div>
 
 <!-- Pie de página -->
 <footer>
-  StreetWorld Finals © 2025 | Contacto: contacto@streetworld.com | Síguenos en @StreetWorldGame
+  StreetWorld Finals © 2025 | contacto@streetworld.com
+  <div class="footer-redes">
+    📷 Instagram | ▶️ YouTube | 🕹️ Discord
+  </div>
 </footer>
 
 </body>
