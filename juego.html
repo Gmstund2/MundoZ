@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>StreetWorld Finals</title>
 
-  <!-- Mapillary Styles -->
+  <!-- Mapillary CSS -->
   <link rel="stylesheet" href="mapillary.css">
-  <!-- Leaflet Styles -->
+  <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
   <style>
@@ -25,7 +25,6 @@
       height: 100vh;
     }
 
-    /* Botón de mapa */
     #guessBtn {
       position: absolute;
       top: 40px;
@@ -38,10 +37,10 @@
       padding: 10px;
       border-radius: 14px;
       cursor: pointer;
+      box-shadow: 0 0 12px #00FFCE88;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 12px #00FFCE88;
       transition: transform 0.2s;
     }
 
@@ -49,7 +48,6 @@
       transform: scale(1.1);
     }
 
-    /* Mapa para adivinanza */
     #map {
       display: none;
       width: 90%;
@@ -66,37 +64,28 @@
       box-shadow: 0 0 30px #00FFCE88;
     }
 
-    /* Botón cerrar mapa */
-    #closeMap {
+    #closeMap, #confirmSelection {
       display: none;
       position: fixed;
-      top: 20px;
-      right: 20px;
       z-index: 3000;
       background: #00FFCE;
       color: #000;
-      font-size: 20px;
+      font-size: 18px;
       padding: 10px 20px;
       border: none;
       border-radius: 10px;
       cursor: pointer;
     }
 
-    /* Botón confirmar selección */
+    #closeMap {
+      top: 20px;
+      right: 20px;
+    }
+
     #confirmSelection {
-      display: none;
-      position: fixed;
       bottom: 80px;
       left: 50%;
       transform: translateX(-50%);
-      z-index: 3000;
-      background: #00FFCE;
-      color: #000;
-      font-size: 22px;
-      padding: 14px 28px;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
       box-shadow: 0 0 15px #00FFCE88;
     }
 
@@ -114,7 +103,6 @@
       align-items: center;
       z-index: 5000;
       color: #00FFCE;
-      font-family: Arial, sans-serif;
       font-size: 24px;
     }
 
@@ -133,35 +121,23 @@
       100% { transform: rotate(360deg); }
     }
 
-    /* Modal resultado */
-    #resultModal {
+    /* Notificación de resultado */
+    #smallResult {
       display: none;
       position: fixed;
-      top: 50%;
+      bottom: 20px;
       left: 50%;
-      transform: translate(-50%, -50%);
-      background: rgba(0, 0, 0, 0.95);
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.8);
       color: #00FFCE;
-      padding: 40px;
+      padding: 15px 25px;
       border-radius: 12px;
-      text-align: center;
-      z-index: 5000;
-      font-family: 'Arial', sans-serif;
-      box-shadow: 0 0 20px #00FFCE88;
-    }
-
-    #closeResult {
-      margin-top: 20px;
-      background: #00FFCE;
-      color: #000;
-      padding: 10px 30px;
       font-size: 18px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
+      box-shadow: 0 0 15px #00FFCE88;
+      z-index: 4000;
     }
 
-    /* Botones Mapillary más grandes */
+    /* Agrandar botones Mapillary */
     .mly-container .mly-component-navigation {
       top: 60px !important;
       transform: scale(1.5);
@@ -180,20 +156,16 @@
   <!-- Botón Mapa -->
   <button id="guessBtn">🗺️</button>
 
-  <!-- Visor Mapillary -->
-  <div id="mly">Cargando visor...</div>
+  <!-- Mapillary -->
+  <div id="mly"></div>
 
-  <!-- Mapa adivinanza -->
+  <!-- Mapa selección -->
   <div id="map"></div>
   <button id="closeMap">Cerrar Mapa</button>
   <button id="confirmSelection">Confirmar selección</button>
 
-  <!-- Modal resultado -->
-  <div id="resultModal">
-    <h2>Resultado</h2>
-    <p id="resultText"></p>
-    <button id="closeResult">Cerrar</button>
-  </div>
+  <!-- Resultado pequeño -->
+  <div id="smallResult"></div>
 
   <!-- Scripts -->
   <script src="mapillary.min.js"></script>
@@ -276,32 +248,40 @@
 
     map.on('click', function(e) {
       selectedCoords = [e.latlng.lat, e.latlng.lng];
+      
+      if (userMarker) map.removeLayer(userMarker);
+      
+      userMarker = L.marker(selectedCoords, {title: "Tu selección"}).addTo(map);
+
       document.getElementById('confirmSelection').style.display = 'block';
     });
 
     document.getElementById('confirmSelection').addEventListener('click', () => {
       if (!selectedCoords || !currentCoords) return;
 
-      if (userMarker) map.removeLayer(userMarker);
       if (realMarker) map.removeLayer(realMarker);
       if (line) map.removeLayer(line);
 
-      userMarker = L.marker(selectedCoords, {title: "Tu elección"}).addTo(map);
       realMarker = L.marker(currentCoords, {title: "Ubicación real"}).addTo(map);
-
       line = L.polyline([selectedCoords, currentCoords], {color: 'red'}).addTo(map);
 
       const dist = calculateDistance(selectedCoords[0], selectedCoords[1], currentCoords[0], currentCoords[1]);
-      const puntos = Math.max(0, Math.round(5000 - dist * 50));
+      const puntos = Math.max(100, Math.round(5000 - dist * 30));
 
-      document.getElementById('resultText').innerHTML = `¡Estuviste a <strong>${dist.toFixed(2)} km</strong>!<br>Ganaste <strong>${puntos}</strong> puntos.`;
-      document.getElementById('resultModal').style.display = 'block';
+      let mensaje = "";
+      if (dist < 10) mensaje = "¡Épico! Solo a " + dist.toFixed(1) + " km.";
+      else if (dist < 50) mensaje = "¡Muy cerca! Estuviste a " + dist.toFixed(1) + " km.";
+      else if (dist < 150) mensaje = "Nada mal, a " + dist.toFixed(1) + " km.";
+      else mensaje = "Sigue intentando, estabas a " + dist.toFixed(1) + " km.";
+
+      document.getElementById('smallResult').innerHTML = `+${puntos} pts<br>${mensaje}`;
+      document.getElementById('smallResult').style.display = 'block';
 
       hideMap();
-    });
-
-    document.getElementById('closeResult').addEventListener('click', () => {
-      document.getElementById('resultModal').style.display = 'none';
+      
+      setTimeout(() => {
+        document.getElementById('smallResult').style.display = 'none';
+      }, 5000);
     });
 
     function calculateDistance(lat1, lon1, lat2, lon2) {
