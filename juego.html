@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -62,7 +62,6 @@
       border-radius: 10px;
       cursor: pointer;
     }
-    /* Modal de resultados */
     #resultModal {
       display: none;
       position: fixed;
@@ -101,7 +100,6 @@
   <div id="map"></div>
   <button id="closeMap">Cerrar Mapa</button>
 
-  <!-- Modal bonito -->
   <div id="resultModal">
     <h2>Resultado</h2>
     <p id="resultText"></p>
@@ -159,7 +157,6 @@
     }
 
     document.getElementById('nextBtn').addEventListener('click', loadFromBoundingBox);
-
     loadFromBoundingBox();
 
     const map = L.map('map', {
@@ -168,9 +165,8 @@
       maxZoom: 5
     }).setView([20, 0], 2);
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; OpenStreetMap & CartoDB',
-      subdomains: 'abcd',
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors',
       maxZoom: 19
     }).addTo(map);
 
