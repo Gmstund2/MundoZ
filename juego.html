@@ -49,7 +49,7 @@
       transform: scale(1.1);
     }
 
-    /* Estilo del mapa */
+    /* Mapa para adivinanza */
     #map {
       display: none;
       width: 90%;
@@ -66,6 +66,7 @@
       box-shadow: 0 0 30px #00FFCE88;
     }
 
+    /* Botón cerrar mapa */
     #closeMap {
       display: none;
       position: fixed;
@@ -81,7 +82,25 @@
       cursor: pointer;
     }
 
-    /* Loading screen */
+    /* Botón confirmar selección */
+    #confirmSelection {
+      display: none;
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3000;
+      background: #00FFCE;
+      color: #000;
+      font-size: 22px;
+      padding: 14px 28px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 0 15px #00FFCE88;
+    }
+
+    /* Loading */
     #loadingScreen {
       position: fixed;
       top: 0;
@@ -114,7 +133,7 @@
       100% { transform: rotate(360deg); }
     }
 
-    /* Resultado bonito */
+    /* Modal resultado */
     #resultModal {
       display: none;
       position: fixed;
@@ -142,9 +161,10 @@
       cursor: pointer;
     }
 
-    /* Bajamos los botones originales de Mapillary */
+    /* Botones Mapillary más grandes */
     .mly-container .mly-component-navigation {
       top: 60px !important;
+      transform: scale(1.5);
     }
   </style>
 </head>
@@ -166,8 +186,9 @@
   <!-- Mapa adivinanza -->
   <div id="map"></div>
   <button id="closeMap">Cerrar Mapa</button>
+  <button id="confirmSelection">Confirmar selección</button>
 
-  <!-- Modal Resultado -->
+  <!-- Modal resultado -->
   <div id="resultModal">
     <h2>Resultado</h2>
     <p id="resultText"></p>
@@ -181,6 +202,7 @@
   <script>
     const token = 'MLY|9573834739339060|d4dddfbf3167fab2e8b6aa9f14eeade2';
     let currentCoords = null;
+    let selectedCoords = null;
     let userMarker = null;
     let realMarker = null;
     let line = null;
@@ -246,38 +268,30 @@
     function hideMap() {
       document.getElementById('map').style.display = 'none';
       document.getElementById('closeMap').style.display = 'none';
+      document.getElementById('confirmSelection').style.display = 'none';
     }
 
     document.getElementById('guessBtn').addEventListener('click', showMap);
     document.getElementById('closeMap').addEventListener('click', hideMap);
 
-    function calculateDistance(lat1, lon1, lat2, lon2) {
-      const R = 6371;
-      const dLat = (lat2 - lat1) * Math.PI / 180;
-      const dLon = (lon2 - lon1) * Math.PI / 180;
-      const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-                Math.sin(dLon/2) * Math.sin(dLon/2);
-      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-      return R * c;
-    }
-
     map.on('click', function(e) {
-      if (!currentCoords) {
-        alert("Ubicación real no disponible aún.");
-        return;
-      }
+      selectedCoords = [e.latlng.lat, e.latlng.lng];
+      document.getElementById('confirmSelection').style.display = 'block';
+    });
+
+    document.getElementById('confirmSelection').addEventListener('click', () => {
+      if (!selectedCoords || !currentCoords) return;
 
       if (userMarker) map.removeLayer(userMarker);
       if (realMarker) map.removeLayer(realMarker);
       if (line) map.removeLayer(line);
 
-      userMarker = L.marker(e.latlng, {title: "Tu selección"}).addTo(map);
+      userMarker = L.marker(selectedCoords, {title: "Tu elección"}).addTo(map);
       realMarker = L.marker(currentCoords, {title: "Ubicación real"}).addTo(map);
 
-      line = L.polyline([e.latlng, currentCoords], {color: 'red'}).addTo(map);
+      line = L.polyline([selectedCoords, currentCoords], {color: 'red'}).addTo(map);
 
-      const dist = calculateDistance(e.latlng.lat, e.latlng.lng, currentCoords[0], currentCoords[1]);
+      const dist = calculateDistance(selectedCoords[0], selectedCoords[1], currentCoords[0], currentCoords[1]);
       const puntos = Math.max(0, Math.round(5000 - dist * 50));
 
       document.getElementById('resultText').innerHTML = `¡Estuviste a <strong>${dist.toFixed(2)} km</strong>!<br>Ganaste <strong>${puntos}</strong> puntos.`;
@@ -289,6 +303,17 @@
     document.getElementById('closeResult').addEventListener('click', () => {
       document.getElementById('resultModal').style.display = 'none';
     });
+
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371;
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLon/2) * Math.sin(dLon/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      return R * c;
+    }
   </script>
 
 </body>
