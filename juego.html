@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>StreetWorld Finals</title>
 
-  <!-- Mapillary y Leaflet -->
   <link rel="stylesheet" href="mapillary.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
@@ -120,14 +119,13 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
-    /* Botones de navegación Mapillary más grandes */
     .mly-container .mly-component-navigation {
       top: 60px !important;
       transform: scale(1.5);
     }
-    /* Ícono verde para ubicación real */
+    /* Icono verde correcto */
     .real-location {
-      filter: hue-rotate(90deg) brightness(1.2);
+      filter: hue-rotate(135deg) brightness(1.4);
     }
   </style>
 </head>
@@ -190,6 +188,11 @@ async function loadFromBoundingBox() {
     const res = await fetch(apiUrl);
     const data = await res.json();
     if (data?.data?.length > 0) {
+      // Limpieza previa
+      if (userMarker) { map.removeLayer(userMarker); userMarker = null; }
+      if (realMarker) { map.removeLayer(realMarker); realMarker = null; }
+      if (line) { map.removeLayer(line); line = null; }
+
       const image = data.data[0];
       viewer.moveTo(image.id);
       const lon = image.computed_geometry.coordinates[0];
