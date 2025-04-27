@@ -25,37 +25,31 @@
       height: 100vh;
     }
 
-    /* Botones flotantes */
-    .btn-control {
+    /* Botón de mapa 🗺️ */
+    #guessBtn {
       position: absolute;
+      top: 40px;
       left: 20px;
-      width: 60px;
-      height: 60px;
-      margin-bottom: 10px;
+      z-index: 1000;
       background: rgba(0,0,0,0.8);
       color: #00FFCE;
-      font-size: 28px;
+      font-size: 30px;
       border: none;
+      padding: 10px;
       border-radius: 14px;
+      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       box-shadow: 0 0 12px #00FFCE88;
-      cursor: pointer;
       transition: transform 0.2s;
-      z-index: 1000;
     }
 
-    .btn-control:hover {
+    #guessBtn:hover {
       transform: scale(1.1);
     }
 
-    #guessBtn { top: 40px; }
-    #backBtn { top: 120px; }
-    #playBtn { top: 200px; }
-    #forwardBtn { top: 280px; }
-
-    /* Mapa */
+    /* Estilo del mapa de adivinanza */
     #map {
       display: none;
       width: 90%;
@@ -119,6 +113,11 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+
+    /* Aquí movemos los controles de Mapillary hacia abajo */
+    .mly-container .mly-component-navigation {
+      top: 60px !important; /* Normalmente estaban en 10px */
+    }
   </style>
 </head>
 
@@ -130,13 +129,10 @@
     <p>Cargando StreetWorld Finals...</p>
   </div>
 
-  <!-- Botones de control -->
-  <button id="guessBtn" class="btn-control">🗺️</button>
-  <button id="backBtn" class="btn-control">⬅️</button>
-  <button id="playBtn" class="btn-control">▶️</button>
-  <button id="forwardBtn" class="btn-control">➡️</button>
+  <!-- Botón mapa personalizado -->
+  <button id="guessBtn">🗺️</button>
 
-  <!-- Mapillary visor -->
+  <!-- Visor de Mapillary -->
   <div id="mly">Cargando visor...</div>
 
   <!-- Mapa para adivinar -->
@@ -150,12 +146,11 @@
   <script>
     const token = 'MLY|9573834739339060|d4dddfbf3167fab2e8b6aa9f14eeade2';
     let currentCoords = null;
-    let playInterval = null;
 
     const viewer = new mapillary.Viewer({
       container: 'mly',
-      accessToken: token,
-      component: { cover: false, direction: false, sequence: false, attribution: false }
+      accessToken: token
+      // No desactivamos componentes, dejamos Mapillary con todo como original
     });
 
     viewer.on('image', () => {
@@ -192,7 +187,7 @@
     }
     loadFromBoundingBox();
 
-    // Control de mapa
+    // Control del mapa
     const map = L.map('map', {
       zoomControl: true,
       minZoom: 2,
@@ -220,25 +215,6 @@
     document.getElementById('guessBtn').addEventListener('click', showMap);
     document.getElementById('closeMap').addEventListener('click', hideMap);
 
-    // Botones de control
-    document.getElementById('backBtn').addEventListener('click', () => {
-      viewer.moveDir(-1);
-    });
-
-    document.getElementById('forwardBtn').addEventListener('click', () => {
-      viewer.moveDir(1);
-    });
-
-    document.getElementById('playBtn').addEventListener('click', () => {
-      if (!playInterval) {
-        playInterval = setInterval(() => viewer.moveDir(1), 2000);
-        document.getElementById('playBtn').innerText = '⏸️';
-      } else {
-        clearInterval(playInterval);
-        playInterval = null;
-        document.getElementById('playBtn').innerText = '▶️';
-      }
-    });
   </script>
 
 </body>
