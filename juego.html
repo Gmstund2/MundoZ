@@ -4,19 +4,25 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>StreetWorld Visor</title>
+
+  <!-- Estilos de Mapillary -->
   <link rel="stylesheet" href="mapillary.css">
+  <!-- Estilos de Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
   <style>
     html, body {
       margin: 0;
       padding: 0;
       height: 100%;
       background-color: #000;
+      overflow: hidden;
     }
     #mly {
       width: 100%;
       height: 100vh;
     }
-    #nextBtn {
+    #nextBtn, #guessBtn {
       position: absolute;
       top: 10px;
       left: 10px;
@@ -28,16 +34,53 @@
       border: none;
       border-radius: 6px;
       cursor: pointer;
+      margin-bottom: 10px;
+    }
+    #guessBtn {
+      top: 60px;
+    }
+    #map {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 2000;
+    }
+    #closeMap {
+      display: none;
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 3000;
+      background: #00FFCE;
+      color: #000;
+      font-size: 20px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
     }
   </style>
 </head>
+
 <body>
+
   <button id="nextBtn">Nueva ubicación</button>
+  <button id="guessBtn">Marcar Ubicación</button>
+
   <div id="mly">Cargando visor...</div>
 
+  <div id="map"></div>
+  <button id="closeMap">Cerrar Mapa</button>
+
   <script src="mapillary.min.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
   <script>
     const token = 'MLY|9573834739339060|d4dddfbf3167fab2e8b6aa9f14eeade2';
+    let currentCoords = null; // Coordenadas reales de la imagen
 
     const viewer = new mapillary.Viewer({
       container: 'mly',
@@ -45,42 +88,36 @@
     });
 
     const zonasUrbanas = [
-      // París
-      [2.28, 48.85, 2.36, 48.87],
-      // Tokio
-      [139.68, 35.68, 139.70, 35.70],
-      // Nueva York
-      [-74.01, 40.71, -73.99, 40.73],
-      // Berlín
-      [13.39, 52.51, 13.41, 52.53],
-      // Londres
-      [-0.12, 51.50, -0.10, 51.52],
-      // Barcelona
-      [2.16, 41.38, 2.18, 41.40],
-      // Ámsterdam
-      [4.89, 52.36, 4.91, 52.38],
-      // Sídney
-      [151.20, -33.87, 151.22, -33.85],
-      // Buenos Aires
-      [-58.39, -34.61, -58.37, -34.59],
-      // Ciudad de México
-      [-99.14, 19.43, -99.12, 19.45],
+      [2.28, 48.85, 2.36, 48.87], // París
+      [139.68, 35.68, 139.70, 35.70], // Tokio
+      [-74.01, 40.71, -73.99, 40.73], // Nueva York
+      [13.39, 52.51, 13.41, 52.53], // Berlín
+      [-0.12, 51.50, -0.10, 51.52], // Londres
+      [2.16, 41.38, 2.18, 41.40], // Barcelona
+      [4.89, 52.36, 4.91, 52.38], // Ámsterdam
+      [151.20, -33.87, 151.22, -33.85], // Sídney
+      [-58.39, -34.61, -58.37, -34.59], // Buenos Aires
+      [-99.14, 19.43, -99.12, 19.45] // Ciudad de México
     ];
 
     async function loadFromBoundingBox() {
       const bbox = zonasUrbanas[Math.floor(Math.random() * zonasUrbanas.length)];
-      const apiUrl = `https://graph.mapillary.com/images?bbox=${bbox.join(',')}&limit=1&fields=id&access_token=${token}`;
+      const apiUrl = `https://graph.mapillary.com/images?bbox=${bbox.join(',')}&limit=1&fields=id,computed_geometry&access_token=${token}`;
 
       try {
         const res = await fetch(apiUrl);
         const data = await res.json();
 
         if (data?.data?.length > 0) {
-          const imageId = data.data[0].id;
-          viewer.moveTo(imageId);
+          const image = data.data[0];
+          viewer.moveTo(image.id);
+
+          const lon = image.computed_geometry.coordinates[0];
+          const lat = image.computed_geometry.coordinates[1];
+          currentCoords = [lat, lon];
         } else {
           console.warn("No se encontró imagen, reintentando...");
-          loadFromBoundingBox(); // Intenta otra vez
+          loadFromBoundingBox();
         }
       } catch (error) {
         console.error("Error al cargar imagen:", error);
@@ -92,6 +129,76 @@
 
     // Carga inicial
     loadFromBoundingBox();
+
+    // Leaflet mapa
+    const map = L.map('map').setView([20, 0], 2);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    let userMarker = null;
+    let realMarker = null;
+    let line = null;
+
+    function showMap() {
+      document.getElementById('map').style.display = 'block';
+      document.getElementById('closeMap').style.display = 'block';
+    }
+
+    function hideMap() {
+      document.getElementById('map').style.display = 'none';
+      document.getElementById('closeMap').style.display = 'none';
+
+      if (userMarker) map.removeLayer(userMarker);
+      if (realMarker) map.removeLayer(realMarker);
+      if (line) map.removeLayer(line);
+    }
+
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+      function toRad(x) {
+        return x * Math.PI / 180;
+      }
+
+      const R = 6371;
+      const dLat = toRad(lat2 - lat1);
+      const dLon = toRad(lon2 - lon1);
+      const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+                Math.sin(dLon/2) * Math.sin(dLon/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      return R * c;
+    }
+
+    map.on('click', function(e) {
+      if (!currentCoords) {
+        alert("Ubicación real no disponible aún.");
+        return;
+      }
+
+      if (userMarker) map.removeLayer(userMarker);
+      if (realMarker) map.removeLayer(realMarker);
+      if (line) map.removeLayer(line);
+
+      userMarker = L.marker(e.latlng, {title: "Tu elección"}).addTo(map);
+      realMarker = L.marker(currentCoords, {title: "Ubicación real", icon: L.icon({
+        iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
+        iconSize: [30, 30]
+      })}).addTo(map);
+
+      line = L.polyline([e.latlng, currentCoords], {color: 'red'}).addTo(map);
+
+      const dist = calculateDistance(e.latlng.lat, e.latlng.lng, currentCoords[0], currentCoords[1]);
+      const puntos = Math.max(0, Math.round(5000 - dist * 50)); // Menos distancia = más puntos
+
+      alert(`¡Estuviste a ${dist.toFixed(2)} km!  
+Ganaste ${puntos} puntos.`);
+
+      hideMap();
+    });
+
+    document.getElementById('guessBtn').addEventListener('click', showMap);
+    document.getElementById('closeMap').addEventListener('click', hideMap);
   </script>
+
 </body>
 </html>
