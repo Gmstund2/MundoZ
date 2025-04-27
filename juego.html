@@ -17,11 +17,14 @@
       height: 100%;
       background-color: #000;
       overflow: hidden;
+      font-family: Arial, sans-serif;
     }
+
     #mly {
       width: 100%;
       height: 100vh;
     }
+
     #nextBtn, #guessBtn {
       position: absolute;
       top: 10px;
@@ -36,18 +39,27 @@
       cursor: pointer;
       margin-bottom: 10px;
     }
+
     #guessBtn {
       top: 60px;
     }
+
     #map {
       display: none;
+      width: 90%;
+      max-width: 800px;
+      height: 500px;
+      background: #ccc;
+      border: 4px solid #00FFCE;
+      border-radius: 20px;
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       z-index: 2000;
+      box-shadow: 0 0 30px #00FFCE88;
     }
+
     #closeMap {
       display: none;
       position: fixed;
@@ -62,6 +74,7 @@
       border-radius: 10px;
       cursor: pointer;
     }
+
     #resultModal {
       display: none;
       position: fixed;
@@ -74,9 +87,9 @@
       border-radius: 12px;
       text-align: center;
       z-index: 5000;
-      font-family: 'Arial', sans-serif;
       box-shadow: 0 0 20px #00FFCE88;
     }
+
     #closeResult {
       margin-top: 20px;
       background: #00FFCE;
@@ -159,13 +172,11 @@
     document.getElementById('nextBtn').addEventListener('click', loadFromBoundingBox);
     loadFromBoundingBox();
 
- const map = L.map('map', {
-  zoomControl: true,
-  minZoom: 2,
-  maxZoom: 5,
-  maxBounds: [[-85, -180], [85, 180]], // Límite en latitudes y longitudes reales
-  maxBoundsViscosity: 1.0              // Rebote al intentar salir
-}).setView([20, 0], 2);
+    const map = L.map('map', {
+      zoomControl: true,
+      minZoom: 2,
+      maxZoom: 5
+    }).setView([20, 0], 2);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors',
