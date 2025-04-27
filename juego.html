@@ -190,6 +190,7 @@
     function showMap() {
       document.getElementById('map').style.display = 'block';
       document.getElementById('closeMap').style.display = 'block';
+      map.invalidateSize(); // ¡¡Clave!! Actualizar el mapa cuando se abre
     }
 
     function hideMap() {
@@ -207,7 +208,7 @@
       }
       const R = 6371;
       const dLat = toRad(lat2 - lat1);
-      const dLon = toRad(lon2 - lon1);
+      const dLon = toRad(lat2 - lon2);
       const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
                 Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
                 Math.sin(dLon/2) * Math.sin(dLon/2);
