@@ -160,10 +160,12 @@
     loadFromBoundingBox();
 
     const map = L.map('map', {
-      zoomControl: true,
-      minZoom: 2,
-      maxZoom: 5
-    }).setView([20, 0], 2);
+  zoomControl: true,
+  minZoom: 2,
+  maxZoom: 5,
+  maxBounds: [[-85, -180], [85, 180]], // Limitar a mundo
+  maxBoundsViscosity: 1.0
+}).setView([20, 0], 2);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors',
