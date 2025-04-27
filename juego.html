@@ -25,24 +25,31 @@
       height: 100vh;
     }
 
-    /* Botón de Nueva Ubicación (ícono solo) */
-    #nextBtn {
+    /* Botón 🗺️ */
+    #guessBtn {
       position: absolute;
-      top: 10px;
-      left: 10px;
+      top: 50px;
+      left: 20px;
       z-index: 1000;
-      background: rgba(0,0,0,0.7);
-      color: white;
-      padding: 12px;
+      background: rgba(0,0,0,0.8);
+      color: #00FFCE;
+      font-size: 40px;
       border: none;
-      border-radius: 12px;
+      padding: 14px;
+      border-radius: 14px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
+      box-shadow: 0 0 15px #00FFCE88;
+      transition: transform 0.2s;
     }
 
-    /* Mapa pequeño */
+    #guessBtn:hover {
+      transform: scale(1.1);
+    }
+
+    /* Mapa */
     #map {
       display: none;
       width: 90%;
@@ -57,6 +64,21 @@
       transform: translate(-50%, -50%);
       z-index: 2000;
       box-shadow: 0 0 30px #00FFCE88;
+    }
+
+    #closeMap {
+      display: none;
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 3000;
+      background: #00FFCE;
+      color: #000;
+      font-size: 20px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
     }
 
     /* Loading screen */
@@ -91,28 +113,26 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
-
   </style>
 </head>
 
 <body>
 
-  <!-- Loading Screen -->
+  <!-- Loading -->
   <div id="loadingScreen">
     <div class="loader"></div>
     <p>Cargando StreetWorld Finals...</p>
   </div>
 
-  <!-- Botón Nueva ubicación -->
-  <button id="nextBtn">
-    <img src="https://cdn-icons-png.flaticon.com/512/3177/3177361.png" alt="Mapa" style="width: 26px; vertical-align: middle;">
-  </button>
+  <!-- Botón adivinar ubicación -->
+  <button id="guessBtn">🗺️</button>
 
   <!-- Mapillary visor -->
   <div id="mly">Cargando visor...</div>
 
-  <!-- Map para marcar ubicaciones (queda oculto por ahora) -->
+  <!-- Mapa para adivinar -->
   <div id="map"></div>
+  <button id="closeMap">Cerrar Mapa</button>
 
   <!-- Scripts -->
   <script src="mapillary.min.js"></script>
@@ -169,12 +189,82 @@
       }
     }
 
-    document.getElementById('nextBtn').addEventListener('click', loadFromBoundingBox);
-
-    // Cargar primer ubicación automáticamente
     loadFromBoundingBox();
 
-    // (dejamos oculto el mapa de momento porque no estamos usando marcaciones manuales)
+    // MAPA
+    const map = L.map('map', {
+      zoomControl: true,
+      minZoom: 2,
+      maxZoom: 19,
+      maxBounds: [[-85, -180], [85, 180]],
+      maxBoundsViscosity: 1.0
+    }).setView([20, 0], 2);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors',
+      maxZoom: 19
+    }).addTo(map);
+
+    let userMarker = null;
+    let realMarker = null;
+    let line = null;
+
+    function showMap() {
+      document.getElementById('map').style.display = 'block';
+      document.getElementById('closeMap').style.display = 'block';
+      map.invalidateSize();
+    }
+
+    function hideMap() {
+      document.getElementById('map').style.display = 'none';
+      document.getElementById('closeMap').style.display = 'none';
+
+      if (userMarker) map.removeLayer(userMarker);
+      if (realMarker) map.removeLayer(realMarker);
+      if (line) map.removeLayer(line);
+    }
+
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+      function toRad(x) { return x * Math.PI / 180; }
+      const R = 6371;
+      const dLat = toRad(lat2 - lat1);
+      const dLon = toRad(lon2 - lon1);
+      const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+                Math.sin(dLon/2) * Math.sin(dLon/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      return R * c;
+    }
+
+    map.on('click', function(e) {
+      if (!currentCoords) {
+        alert("Ubicación real no disponible aún.");
+        return;
+      }
+
+      if (userMarker) map.removeLayer(userMarker);
+      if (realMarker) map.removeLayer(realMarker);
+      if (line) map.removeLayer(line);
+
+      userMarker = L.marker(e.latlng, {title: "Tu elección"}).addTo(map);
+      realMarker = L.marker(currentCoords, {title: "Ubicación real", icon: L.icon({
+        iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
+        iconSize: [30, 30]
+      })}).addTo(map);
+
+      line = L.polyline([e.latlng, currentCoords], {color: 'red'}).addTo(map);
+
+      const dist = calculateDistance(e.latlng.lat, e.latlng.lng, currentCoords[0], currentCoords[1]);
+      const puntos = Math.max(0, Math.round(5000 - dist * 50));
+
+      alert(`¡Estuviste a ${dist.toFixed(2)} km!\nGanaste ${puntos} puntos.`);
+
+      hideMap();
+    });
+
+    document.getElementById('guessBtn').addEventListener('click', showMap);
+    document.getElementById('closeMap').addEventListener('click', hideMap);
+
   </script>
 
 </body>
