@@ -91,7 +91,7 @@
       z-index: 4000;
       pointer-events: none;
     }
-    #loadingScreen {
+    #loadingScreen, #newLoading {
       position: fixed;
       top: 0;
       left: 0;
@@ -131,6 +131,11 @@
 <div id="loadingScreen">
   <div class="loader"></div>
   <p>Cargando StreetWorld Finals...</p>
+</div>
+
+<div id="newLoading" style="display:none;">
+  <div class="loader"></div>
+  <p>Cambiando de ubicación...</p>
 </div>
 
 <button id="guessBtn">🗺️</button>
@@ -237,7 +242,12 @@ document.getElementById('confirmSelection').addEventListener('click', () => {
   if (realMarker) map.removeLayer(realMarker);
   if (line) map.removeLayer(line);
 
-  realMarker = L.marker(currentCoords, {title: "Ubicación real"}).addTo(map);
+  const greenIcon = L.icon({
+    iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/4/4f/Green_map_marker_icon.svg',
+    iconSize: [35, 45],
+  });
+
+  realMarker = L.marker(currentCoords, {title: "Ubicación real", icon: greenIcon}).addTo(map);
   line = L.polyline([selectedCoords, currentCoords], {color: 'red'}).addTo(map);
 
   setTimeout(() => {
@@ -251,7 +261,7 @@ document.getElementById('confirmSelection').addEventListener('click', () => {
     else mensaje = "Lejos: " + dist.toFixed(1) + " km.";
 
     const smallResult = document.getElementById('smallResult');
-    smallResult.innerHTML = `+${puntos} pts<br>${mensaje}`;
+    smallResult.innerHTML = `+${puntos} pts<br>${mensaje}<br><small>¡Nueva ubicación en 5s!</small>`;
     smallResult.style.top = (map.getSize().y * 0.7) + 'px';
     smallResult.style.left = '50%';
     smallResult.style.transform = 'translateX(-50%)';
@@ -259,10 +269,15 @@ document.getElementById('confirmSelection').addEventListener('click', () => {
 
     setTimeout(() => {
       smallResult.style.display = 'none';
+      document.getElementById('newLoading').style.display = 'flex';
+      setTimeout(() => {
+        document.getElementById('newLoading').style.display = 'none';
+        loadFromBoundingBox();
+        hideMap();
+      }, 3000);
     }, 5000);
-  }, 2000);
 
-  document.getElementById('confirmSelection').style.display = 'none';
+  }, 500);
 });
 
 function calculateDistance(lat1, lon1, lat2, lon2) {
@@ -278,4 +293,4 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 </script>
 
 </body>
-</html>
+                                                                </html>
