@@ -5,9 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>StreetWorld Finals</title>
 
-  <!-- Mapillary CSS -->
+  <!-- Mapillary y Leaflet -->
   <link rel="stylesheet" href="mapillary.css">
-  <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
   <style>
@@ -19,12 +18,10 @@
       overflow: hidden;
       font-family: Arial, sans-serif;
     }
-
     #mly {
       width: 100%;
       height: 100vh;
     }
-
     #guessBtn {
       position: absolute;
       top: 40px;
@@ -38,16 +35,7 @@
       border-radius: 14px;
       cursor: pointer;
       box-shadow: 0 0 12px #00FFCE88;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform 0.2s;
     }
-
-    #guessBtn:hover {
-      transform: scale(1.1);
-    }
-
     #map {
       display: none;
       width: 90%;
@@ -63,33 +51,46 @@
       z-index: 2000;
       box-shadow: 0 0 30px #00FFCE88;
     }
-
-    #closeMap, #confirmSelection {
+    #closeMap {
       display: none;
       position: fixed;
+      top: 10px;
+      right: 20px;
       z-index: 3000;
-      background: #00FFCE;
-      color: #000;
-      font-size: 18px;
-      padding: 10px 20px;
+      background: none;
       border: none;
-      border-radius: 10px;
+      font-size: 40px;
+      color: #00FFCE;
       cursor: pointer;
     }
-
-    #closeMap {
-      top: 20px;
-      right: 20px;
-    }
-
     #confirmSelection {
+      display: none;
+      position: fixed;
       bottom: 80px;
       left: 50%;
       transform: translateX(-50%);
+      z-index: 3000;
+      background: #00FFCE;
+      color: #000;
+      font-size: 20px;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
       box-shadow: 0 0 15px #00FFCE88;
     }
-
-    /* Loading */
+    #smallResult {
+      display: none;
+      position: absolute;
+      background: rgba(0, 0, 0, 0.8);
+      color: #00FFCE;
+      padding: 10px 20px;
+      border-radius: 12px;
+      font-size: 18px;
+      box-shadow: 0 0 15px #00FFCE88;
+      z-index: 4000;
+      pointer-events: none;
+    }
     #loadingScreen {
       position: fixed;
       top: 0;
@@ -105,7 +106,6 @@
       color: #00FFCE;
       font-size: 24px;
     }
-
     .loader {
       border: 8px solid #222;
       border-top: 8px solid #00FFCE;
@@ -115,29 +115,10 @@
       animation: spin 1s linear infinite;
       margin-bottom: 20px;
     }
-
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
-
-    /* Notificación de resultado */
-    #smallResult {
-      display: none;
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(0, 0, 0, 0.8);
-      color: #00FFCE;
-      padding: 15px 25px;
-      border-radius: 12px;
-      font-size: 18px;
-      box-shadow: 0 0 15px #00FFCE88;
-      z-index: 4000;
-    }
-
-    /* Agrandar botones Mapillary */
     .mly-container .mly-component-navigation {
       top: 60px !important;
       transform: scale(1.5);
@@ -147,154 +128,154 @@
 
 <body>
 
-  <!-- Loading -->
-  <div id="loadingScreen">
-    <div class="loader"></div>
-    <p>Cargando StreetWorld Finals...</p>
-  </div>
+<div id="loadingScreen">
+  <div class="loader"></div>
+  <p>Cargando StreetWorld Finals...</p>
+</div>
 
-  <!-- Botón Mapa -->
-  <button id="guessBtn">🗺️</button>
+<button id="guessBtn">🗺️</button>
 
-  <!-- Mapillary -->
-  <div id="mly"></div>
+<div id="mly"></div>
 
-  <!-- Mapa selección -->
-  <div id="map"></div>
-  <button id="closeMap">Cerrar Mapa</button>
-  <button id="confirmSelection">Confirmar selección</button>
+<div id="map"></div>
+<button id="closeMap">❌</button>
+<button id="confirmSelection">Confirmar selección</button>
 
-  <!-- Resultado pequeño -->
-  <div id="smallResult"></div>
+<div id="smallResult"></div>
 
-  <!-- Scripts -->
-  <script src="mapillary.min.js"></script>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="mapillary.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-  <script>
-    const token = 'MLY|9573834739339060|d4dddfbf3167fab2e8b6aa9f14eeade2';
-    let currentCoords = null;
-    let selectedCoords = null;
-    let userMarker = null;
-    let realMarker = null;
-    let line = null;
+<script>
+const token = 'MLY|9573834739339060|d4dddfbf3167fab2e8b6aa9f14eeade2';
+let currentCoords = null;
+let selectedCoords = null;
+let userMarker = null;
+let realMarker = null;
+let line = null;
 
-    const viewer = new mapillary.Viewer({
-      container: 'mly',
-      accessToken: token
-    });
+const viewer = new mapillary.Viewer({
+  container: 'mly',
+  accessToken: token
+});
 
-    viewer.on('image', () => {
-      document.getElementById('loadingScreen').style.display = 'none';
-    });
+viewer.on('image', () => {
+  document.getElementById('loadingScreen').style.display = 'none';
+});
 
-    const zonasUrbanas = [
-      [2.28, 48.85, 2.36, 48.87], [139.68, 35.68, 139.70, 35.70],
-      [-74.01, 40.71, -73.99, 40.73], [13.39, 52.51, 13.41, 52.53],
-      [-0.12, 51.50, -0.10, 51.52], [2.16, 41.38, 2.18, 41.40],
-      [4.89, 52.36, 4.91, 52.38], [151.20, -33.87, 151.22, -33.85],
-      [-58.39, -34.61, -58.37, -34.59], [-99.14, 19.43, -99.12, 19.45]
-    ];
+const zonasUrbanas = [
+  [2.28, 48.85, 2.36, 48.87], [139.68, 35.68, 139.70, 35.70],
+  [-74.01, 40.71, -73.99, 40.73], [13.39, 52.51, 13.41, 52.53],
+  [-0.12, 51.50, -0.10, 51.52], [2.16, 41.38, 2.18, 41.40],
+  [4.89, 52.36, 4.91, 52.38], [151.20, -33.87, 151.22, -33.85],
+  [-58.39, -34.61, -58.37, -34.59], [-99.14, 19.43, -99.12, 19.45]
+];
 
-    async function loadFromBoundingBox() {
-      const bbox = zonasUrbanas[Math.floor(Math.random() * zonasUrbanas.length)];
-      const apiUrl = `https://graph.mapillary.com/images?bbox=${bbox.join(',')}&limit=1&fields=id,computed_geometry&access_token=${token}`;
+async function loadFromBoundingBox() {
+  const bbox = zonasUrbanas[Math.floor(Math.random() * zonasUrbanas.length)];
+  const apiUrl = `https://graph.mapillary.com/images?bbox=${bbox.join(',')}&limit=1&fields=id,computed_geometry&access_token=${token}`;
 
-      try {
-        const res = await fetch(apiUrl);
-        const data = await res.json();
-        if (data?.data?.length > 0) {
-          const image = data.data[0];
-          viewer.moveTo(image.id);
-          const lon = image.computed_geometry.coordinates[0];
-          const lat = image.computed_geometry.coordinates[1];
-          currentCoords = [lat, lon];
-        } else {
-          loadFromBoundingBox();
-        }
-      } catch (error) {
-        console.error("Error al cargar imagen:", error);
-      }
+  try {
+    const res = await fetch(apiUrl);
+    const data = await res.json();
+    if (data?.data?.length > 0) {
+      const image = data.data[0];
+      viewer.moveTo(image.id);
+      const lon = image.computed_geometry.coordinates[0];
+      const lat = image.computed_geometry.coordinates[1];
+      currentCoords = [lat, lon];
+    } else {
+      loadFromBoundingBox();
     }
-    loadFromBoundingBox();
+  } catch (error) {
+    console.error("Error al cargar imagen:", error);
+  }
+}
+loadFromBoundingBox();
 
-    const map = L.map('map', {
-      zoomControl: true,
-      minZoom: 2,
-      maxZoom: 19,
-      maxBounds: [[-85, -180], [85, 180]],
-      maxBoundsViscosity: 1.0
-    }).setView([20, 0], 2);
+const map = L.map('map', {
+  zoomControl: true,
+  minZoom: 2,
+  maxZoom: 19,
+  maxBounds: [[-85, -180], [85, 180]],
+  maxBoundsViscosity: 1.0
+}).setView([20, 0], 2);
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors',
-      maxZoom: 19
-    }).addTo(map);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; OpenStreetMap contributors',
+  maxZoom: 19
+}).addTo(map);
 
-    function showMap() {
-      document.getElementById('map').style.display = 'block';
-      document.getElementById('closeMap').style.display = 'block';
-      map.invalidateSize();
-    }
+function showMap() {
+  document.getElementById('map').style.display = 'block';
+  document.getElementById('closeMap').style.display = 'block';
+  map.invalidateSize();
+}
 
-    function hideMap() {
-      document.getElementById('map').style.display = 'none';
-      document.getElementById('closeMap').style.display = 'none';
-      document.getElementById('confirmSelection').style.display = 'none';
-    }
+function hideMap() {
+  document.getElementById('map').style.display = 'none';
+  document.getElementById('closeMap').style.display = 'none';
+  document.getElementById('confirmSelection').style.display = 'none';
+}
 
-    document.getElementById('guessBtn').addEventListener('click', showMap);
-    document.getElementById('closeMap').addEventListener('click', hideMap);
+document.getElementById('guessBtn').addEventListener('click', showMap);
+document.getElementById('closeMap').addEventListener('click', hideMap);
 
-    map.on('click', function(e) {
-      selectedCoords = [e.latlng.lat, e.latlng.lng];
-      
-      if (userMarker) map.removeLayer(userMarker);
-      
-      userMarker = L.marker(selectedCoords, {title: "Tu selección"}).addTo(map);
+map.on('click', function(e) {
+  selectedCoords = [e.latlng.lat, e.latlng.lng];
 
-      document.getElementById('confirmSelection').style.display = 'block';
-    });
+  if (userMarker) map.removeLayer(userMarker);
 
-    document.getElementById('confirmSelection').addEventListener('click', () => {
-      if (!selectedCoords || !currentCoords) return;
+  userMarker = L.marker(selectedCoords, {title: "Tu selección"}).addTo(map);
 
-      if (realMarker) map.removeLayer(realMarker);
-      if (line) map.removeLayer(line);
+  document.getElementById('confirmSelection').style.display = 'block';
+});
 
-      realMarker = L.marker(currentCoords, {title: "Ubicación real"}).addTo(map);
-      line = L.polyline([selectedCoords, currentCoords], {color: 'red'}).addTo(map);
+document.getElementById('confirmSelection').addEventListener('click', () => {
+  if (!selectedCoords || !currentCoords) return;
 
-      const dist = calculateDistance(selectedCoords[0], selectedCoords[1], currentCoords[0], currentCoords[1]);
-      const puntos = Math.max(100, Math.round(5000 - dist * 30));
+  if (realMarker) map.removeLayer(realMarker);
+  if (line) map.removeLayer(line);
 
-      let mensaje = "";
-      if (dist < 10) mensaje = "¡Épico! Solo a " + dist.toFixed(1) + " km.";
-      else if (dist < 50) mensaje = "¡Muy cerca! Estuviste a " + dist.toFixed(1) + " km.";
-      else if (dist < 150) mensaje = "Nada mal, a " + dist.toFixed(1) + " km.";
-      else mensaje = "Sigue intentando, estabas a " + dist.toFixed(1) + " km.";
+  realMarker = L.marker(currentCoords, {title: "Ubicación real"}).addTo(map);
+  line = L.polyline([selectedCoords, currentCoords], {color: 'red'}).addTo(map);
 
-      document.getElementById('smallResult').innerHTML = `+${puntos} pts<br>${mensaje}`;
-      document.getElementById('smallResult').style.display = 'block';
+  setTimeout(() => {
+    const dist = calculateDistance(selectedCoords[0], selectedCoords[1], currentCoords[0], currentCoords[1]);
+    const puntos = Math.max(100, Math.round(5000 - dist * 30));
 
-      hideMap();
-      
-      setTimeout(() => {
-        document.getElementById('smallResult').style.display = 'none';
-      }, 5000);
-    });
+    let mensaje = "";
+    if (dist < 10) mensaje = "¡Épico! Solo " + dist.toFixed(1) + " km.";
+    else if (dist < 50) mensaje = "¡Muy cerca! " + dist.toFixed(1) + " km.";
+    else if (dist < 150) mensaje = "Nada mal, a " + dist.toFixed(1) + " km.";
+    else mensaje = "Lejos: " + dist.toFixed(1) + " km.";
 
-    function calculateDistance(lat1, lon1, lat2, lon2) {
-      const R = 6371;
-      const dLat = (lat2 - lat1) * Math.PI / 180;
-      const dLon = (lon2 - lon1) * Math.PI / 180;
-      const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-                Math.sin(dLon/2) * Math.sin(dLon/2);
-      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-      return R * c;
-    }
-  </script>
+    const smallResult = document.getElementById('smallResult');
+    smallResult.innerHTML = `+${puntos} pts<br>${mensaje}`;
+    smallResult.style.top = (map.getSize().y * 0.7) + 'px';
+    smallResult.style.left = '50%';
+    smallResult.style.transform = 'translateX(-50%)';
+    smallResult.style.display = 'block';
+
+    setTimeout(() => {
+      smallResult.style.display = 'none';
+    }, 5000);
+  }, 2000);
+
+  document.getElementById('confirmSelection').style.display = 'none';
+});
+
+function calculateDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+            Math.sin(dLon/2) * Math.sin(dLon/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  return R * c;
+}
+</script>
 
 </body>
 </html>
