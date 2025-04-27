@@ -286,6 +286,10 @@
     document.getElementById('closeResult').addEventListener('click', () => {
       document.getElementById('resultModal').style.display = 'none';
     });
+    // Cuando el visor esté listo, ocultamos el loading
+viewer.on('image', () => {
+  document.getElementById('loadingScreen').style.display = 'none';
+});
   </script>
 
 </body>
