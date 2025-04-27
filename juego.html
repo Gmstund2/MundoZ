@@ -159,11 +159,11 @@
     document.getElementById('nextBtn').addEventListener('click', loadFromBoundingBox);
     loadFromBoundingBox();
 
-    const map = L.map('map', {
+ const map = L.map('map', {
   zoomControl: true,
   minZoom: 2,
   maxZoom: 5,
-  maxBounds: [[-85, -180], [85, 180]], // Limitar a mundo
+  maxBounds: [[-85, -180], [85, 180]],
   maxBoundsViscosity: 1.0
 }).setView([20, 0], 2);
 
