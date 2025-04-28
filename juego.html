@@ -35,6 +35,41 @@
       cursor: pointer;
       box-shadow: 0 0 12px #00FFCE88;
     }
+    #compass {
+      position: absolute;
+      top: 100px;
+      left: 30px;
+      width: 80px;
+      height: 80px;
+      border: 3px solid #00FFCE;
+      border-radius: 50%;
+      box-shadow: 0 0 15px #00FFCE88;
+      background: rgba(0,0,0,0.6);
+      z-index: 1000;
+      transform: rotate(0deg);
+      transition: transform 0.5s ease;
+    }
+    .needle {
+      position: absolute;
+      top: 10%;
+      left: 49%;
+      width: 2px;
+      height: 40%;
+      background: #FF003C;
+      box-shadow: 0 0 8px #FF003C88;
+      transform-origin: bottom center;
+    }
+    .center-dot {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 10px;
+      height: 10px;
+      background: #00FFCE;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 5px #00FFCE;
+    }
     #map {
       display: none;
       width: 90%;
@@ -123,7 +158,6 @@
       top: 60px !important;
       transform: scale(1.5);
     }
-    /* Avatar del jugador */
     .user-avatar {
       width: 30px;
       height: 30px;
@@ -147,6 +181,12 @@
 </div>
 
 <button id="guessBtn">🗺️</button>
+
+<!-- Brújula futurista -->
+<div id="compass">
+  <div class="needle"></div>
+  <div class="center-dot"></div>
+</div>
 
 <div id="mly"></div>
 
@@ -175,6 +215,16 @@ const viewer = new mapillary.Viewer({
 viewer.on('image', () => {
   document.getElementById('loadingScreen').style.display = 'none';
 });
+
+// Brújula gira cuando giras la cámara
+viewer.on('camera', (event) => {
+  const bearing = event.bearing;
+  rotateCompass(bearing);
+});
+
+function rotateCompass(angle) {
+  document.getElementById('compass').style.transform = `rotate(${angle}deg)`;
+}
 
 const zonasUrbanas = [
   [2.28, 48.85, 2.36, 48.87], [139.68, 35.68, 139.70, 35.70],
@@ -243,7 +293,6 @@ map.on('click', function(e) {
 
   if (userMarker) map.removeLayer(userMarker);
 
-  // Usamos un marcador circular como avatar
   userMarker = L.marker(selectedCoords, {
     icon: L.divIcon({
       className: 'user-avatar'
@@ -259,7 +308,6 @@ document.getElementById('confirmSelection').addEventListener('click', () => {
   if (realMarker) map.removeLayer(realMarker);
   if (line) map.removeLayer(line);
 
-  // Marcador real azul clásico
   realMarker = L.marker(currentCoords).addTo(map);
 
   line = L.polyline([selectedCoords, currentCoords], {color: 'red'}).addTo(map);
