@@ -193,7 +193,7 @@ const viewer = new mapillary.Viewer({
 // Función para actualizar la brújula, pero sin modificar la imagen de Mapillary
 function updateCompass(bearing) {
   const compass = document.getElementById('compass');
-  compass.style.transform = `rotate(${-bearing}deg)`; // Esto solo rota la brújula, no la imagen
+  compass.style.transform = `rotate(${bearing}deg)`; // Esto rota la brújula con el ángulo correcto
 }
 
 // Al cargar imagen inicial
@@ -201,13 +201,13 @@ viewer.on('image', () => {
   document.getElementById('loadingScreen').style.display = 'none';
 
   viewer.getCamera().then(camera => {
-    updateCompass(camera.bearing);
+    updateCompass(camera.bearing); // Inicializamos la brújula con la orientación de la cámara
   });
 });
 
 // Cada vez que se mueve la cámara
 viewer.on('camera', camera => {
-  updateCompass(camera.bearing);
+  updateCompass(camera.bearing); // Actualizamos la brújula según la orientación de la cámara
 });
 
 const zonasUrbanas = [
@@ -319,7 +319,6 @@ document.getElementById('confirmSelection').addEventListener('click', () => {
         hideMap();
       }, 3000);
     }, 5000);
-
   }, 500);
 });
 
