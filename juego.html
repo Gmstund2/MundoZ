@@ -35,40 +35,19 @@
       cursor: pointer;
       box-shadow: 0 0 12px #00FFCE88;
     }
-    #compass {
+    #compass-container {
       position: absolute;
       top: 100px;
-      left: 30px;
-      width: 80px;
-      height: 80px;
-      border: 3px solid #00FFCE;
-      border-radius: 50%;
-      box-shadow: 0 0 15px #00FFCE88;
-      background: rgba(0,0,0,0.6);
+      left: 20px;
+      width: 60px;
+      height: 60px;
       z-index: 1000;
+    }
+    #compass {
+      width: 100%;
+      height: 100%;
       transform: rotate(0deg);
-      transition: transform 0.5s ease;
-    }
-    .needle {
-      position: absolute;
-      top: 10%;
-      left: 49%;
-      width: 2px;
-      height: 40%;
-      background: #FF003C;
-      box-shadow: 0 0 8px #FF003C88;
-      transform-origin: bottom center;
-    }
-    .center-dot {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 10px;
-      height: 10px;
-      background: #00FFCE;
-      border-radius: 50%;
-      transform: translate(-50%, -50%);
-      box-shadow: 0 0 5px #00FFCE;
+      transition: transform 0.2s linear;
     }
     #map {
       display: none;
@@ -158,6 +137,7 @@
       top: 60px !important;
       transform: scale(1.5);
     }
+    /* Avatar del jugador */
     .user-avatar {
       width: 30px;
       height: 30px;
@@ -182,10 +162,8 @@
 
 <button id="guessBtn">🗺️</button>
 
-<!-- Brújula futurista -->
-<div id="compass">
-  <div class="needle"></div>
-  <div class="center-dot"></div>
+<div id="compass-container">
+  <img id="compass" src="assets/3066724.png" alt="Brújula">
 </div>
 
 <div id="mly"></div>
@@ -212,19 +190,25 @@ const viewer = new mapillary.Viewer({
   accessToken: token
 });
 
+// Función para actualizar la brújula
+function updateCompass(bearing) {
+  const compass = document.getElementById('compass');
+  compass.style.transform = `rotate(${-bearing}deg)`;
+}
+
+// Al cargar imagen inicial
 viewer.on('image', () => {
   document.getElementById('loadingScreen').style.display = 'none';
+
+  viewer.getCamera().then(camera => {
+    updateCompass(camera.bearing);
+  });
 });
 
-// Brújula gira cuando giras la cámara
-viewer.on('camera', (event) => {
-  const bearing = event.bearing;
-  rotateCompass(bearing);
+// Cada vez que se mueve la cámara
+viewer.on('camera', camera => {
+  updateCompass(camera.bearing);
 });
-
-function rotateCompass(angle) {
-  document.getElementById('compass').style.transform = `rotate(${angle}deg)`;
-}
 
 const zonasUrbanas = [
   [2.28, 48.85, 2.36, 48.87], [139.68, 35.68, 139.70, 35.70],
@@ -294,9 +278,7 @@ map.on('click', function(e) {
   if (userMarker) map.removeLayer(userMarker);
 
   userMarker = L.marker(selectedCoords, {
-    icon: L.divIcon({
-      className: 'user-avatar'
-    })
+    icon: L.divIcon({ className: 'user-avatar' })
   }).addTo(map);
 
   document.getElementById('confirmSelection').style.display = 'block';
@@ -309,7 +291,6 @@ document.getElementById('confirmSelection').addEventListener('click', () => {
   if (line) map.removeLayer(line);
 
   realMarker = L.marker(currentCoords).addTo(map);
-
   line = L.polyline([selectedCoords, currentCoords], {color: 'red'}).addTo(map);
 
   setTimeout(() => {
@@ -355,4 +336,4 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 </script>
 
 </body>
-  </html>
+</html>
