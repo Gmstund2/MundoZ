@@ -5,51 +5,66 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>StreetWorld Finals</title>
 
+  <!-- Mapillary CSS -->
   <link rel="stylesheet" href="mapillary.css">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
   <style>
     html, body {
       margin: 0;
       padding: 0;
       height: 100%;
-      background: #000;
+      background-color: #000;
       overflow: hidden;
       font-family: Arial, sans-serif;
     }
+
+    /* Botones */
+    #guessBtn, #compassBtn {
+      position: absolute;
+      z-index: 1000;
+      background: rgba(0,0,0,0.8);
+      color: white;
+      font-size: 30px;
+      padding: 10px;
+      border: 2px solid white;
+      border-radius: 14px;
+      cursor: pointer;
+      box-shadow: 0 0 10px #00FFCE88;
+    }
+    #guessBtn {
+      top: 20px;
+      left: 20px;
+    }
+    #compassBtn {
+      top: 90px;
+      left: 20px;
+    }
+
+    /* Visor Mapillary */
     #mly {
       width: 100%;
       height: 100vh;
     }
-    #guessBtn {
-      position: absolute;
-      top: 40px;
-      left: 20px;
-      z-index: 1000;
-      background: rgba(0,0,0,0.8);
-      color: #00FFCE;
-      font-size: 30px;
-      border: none;
-      padding: 10px;
-      border-radius: 14px;
-      cursor: pointer;
-      box-shadow: 0 0 12px #00FFCE88;
-    }
+
+    /* Mapa de selección */
     #map {
       display: none;
-      width: 90%;
-      max-width: 600px;
-      height: 500px;
-      background: #ccc;
-      border: 4px solid #00FFCE;
-      border-radius: 20px;
       position: fixed;
       top: 50%;
       left: 50%;
+      width: 90%;
+      max-width: 600px;
+      height: 500px;
       transform: translate(-50%, -50%);
       z-index: 2000;
-      box-shadow: 0 0 30px #00FFCE88;
+      border: 4px solid #00FFCE;
+      border-radius: 20px;
+      box-shadow: 0 0 20px #00FFCE88;
     }
+
+    /* Botón cerrar mapa */
     #closeMap {
       display: none;
       position: fixed;
@@ -63,35 +78,26 @@
       font-weight: bold;
       cursor: pointer;
     }
+
+    /* Confirmar selección */
     #confirmSelection {
       display: none;
       position: fixed;
       bottom: 80px;
       left: 50%;
       transform: translateX(-50%);
-      z-index: 3000;
       background: #00FFCE;
-      color: #000;
+      color: black;
       font-size: 20px;
       padding: 12px 24px;
       border: none;
       border-radius: 10px;
       cursor: pointer;
-      box-shadow: 0 0 15px #00FFCE88;
+      z-index: 3000;
     }
-    #smallResult {
-      display: none;
-      position: absolute;
-      background: rgba(0, 0, 0, 0.8);
-      color: #00FFCE;
-      padding: 10px 20px;
-      border-radius: 12px;
-      font-size: 18px;
-      box-shadow: 0 0 15px #00FFCE88;
-      z-index: 4000;
-      pointer-events: none;
-    }
-    #loadingScreen, #newLoading {
+
+    /* Pantalla de carga */
+    #loadingScreen {
       position: fixed;
       top: 0;
       left: 0;
@@ -119,318 +125,275 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
-    .mly-container .mly-component-navigation {
-      top: 60px !important;
-      transform: scale(1.5);
-    }
-    /* Avatar del jugador */
-    .user-avatar {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      background-color: #00FFCE;
-      border: 3px solid white;
-    }
-    /* Agregar al final del <style> */
-#compassContainer {
-    position: absolute;
-    top: 80px; /* 60px debajo del botón del mapa */
-    left: 20px;
-    z-index: 1000;
-}
 
-.compass-icon {
-    width: 40px;
-    height: 40px;
-    display: none; /* Ocultos por defecto */
-    filter: drop-shadow(0 0 5px #00FFCE);
-      }
-    /* Compass Container - Mismo estilo que el botón del mapa */
-#compassContainer {
-    position: absolute;
-    top: 140px; /* 60px debajo del botón del mapa */
-    left: 20px;
-    z-index: 1000;
-    width: 40px;
-    height: 40px;
-    background: rgba(0,0,0,0.8);
-    border-radius: 14px;
-    border: 2px solid #00FFCE;
-    box-shadow: 0 0 12px #00FFCE88;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+    /* HUD superior (Tiempo + Ronda) */
+    #hud {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      color: white;
+      font-size: 24px;
+      font-weight: bold;
+      z-index: 1500;
+    }
+    #roundInfo {
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      color: white;
+      font-size: 20px;
+      font-weight: bold;
+      z-index: 1500;
+    }
 
-.compass-icon {
-    width: 70%;
-    height: 80%;
-    object-fit: contain;
-    display: none; /* Ocultos por defecto */
-    filter: drop-shadow(0 0 8px #00FFCEaa);
-  }
+    /* Mensaje de puntos */
+    #resultMsg {
+      display: none;
+      position: fixed;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.85);
+      padding: 30px 40px;
+      color: #00FFCE;
+      border-radius: 12px;
+      font-size: 22px;
+      text-align: center;
+      z-index: 4000;
+      box-shadow: 0 0 20px #00FFCE88;
+    }
   </style>
+
 </head>
 
 <body>
 
-<div id="loadingScreen">
-  <div class="loader"></div>
-  <p>Cargando StreetWorld Finals...</p>
-</div>
+  <!-- Pantalla de carga -->
+  <div id="loadingScreen">
+    <div class="loader"></div>
+    <p>Cargando ubicación...</p>
+  </div>
 
-<div id="newLoading" style="display:none;">
-  <div class="loader"></div>
-  <p>Cambiando de ubicación...</p>
-</div>
+  <!-- Visor Mapillary -->
+  <div id="mly"></div>
 
-<button id="guessBtn">🗺️</button>
-<!-- Reemplazar el div compassContainer existente con este -->
-<div id="compassContainer">
-    <img src="assets/667716.png" id="northCompass" class="compass-icon">
-    <img src="assets/7509289.png" id="southCompass" class="compass-icon">
-</div>
-<div id="mly"></div>
+  <!-- Botones -->
+  <button id="guessBtn">🗺️</button>
+  <button id="compassBtn">🧭</button>
 
-<div id="map"></div>
-<button id="closeMap">x</button>
-<button id="confirmSelection">Confirmar selección</button>
+  <!-- HUD de tiempo y ronda -->
+  <div id="hud">Tiempo: 60s</div>
+  <div id="roundInfo">Ronda 1/5</div>
 
-<div id="smallResult"></div>
+  <!-- Mapa emergente -->
+  <div id="map"></div>
+  <button id="closeMap">X</button>
+  <button id="confirmSelection">Confirmar Selección</button>
 
-<script src="mapillary.min.js"></script>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- Mensaje de puntos -->
+  <div id="resultMsg"></div>
 
-<script>
+  <!-- Scripts de librerías -->
+  <script src="mapillary.min.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script>
 const token = 'MLY|9573834739339060|d4dddfbf3167fab2e8b6aa9f14eeade2';
+
+const zonasUrbanas = [
+  [2.28, 48.85, 2.36, 48.87], // París
+  [139.68, 35.68, 139.70, 35.70], // Tokio
+  [-74.01, 40.71, -73.99, 40.73], // Nueva York
+  [13.39, 52.51, 13.41, 52.53], // Berlín
+  [-0.12, 51.50, -0.10, 51.52], // Londres
+  [2.16, 41.38, 2.18, 41.40], // Barcelona
+  [4.89, 52.36, 4.91, 52.38], // Ámsterdam
+  [151.20, -33.87, 151.22, -33.85], // Sídney
+  [-58.39, -34.61, -58.37, -34.59], // Buenos Aires
+  [-99.14, 19.43, -99.12, 19.45] // Ciudad de México
+];
+
+let usedZones = [];
+let round = 1;
+let totalRounds = 5;
+let totalPoints = 0;
+let timer = null;
+let timeLeft = 60;
 let currentCoords = null;
 let selectedCoords = null;
-let userMarker = null;
-let realMarker = null;
-let line = null;
 
 const viewer = new mapillary.Viewer({
   container: 'mly',
   accessToken: token
 });
 
-viewer.on('image', () => {
-  document.getElementById('loadingScreen').style.display = 'none';
-});
-  
-const zonasUrbanas = [
-  // Ciudades originales
-  [2.28, 48.85, 2.36, 48.87],        // París, Francia
-  [139.68, 35.68, 139.70, 35.70],    // Tokio, Japón
-  [-74.01, 40.71, -73.99, 40.73],    // Nueva York, EE.UU.
-  [13.39, 52.51, 13.41, 52.53],      // Berlín, Alemania
-  [-0.12, 51.50, -0.10, 51.52],      // Londres, Reino Unido
-  [2.16, 41.38, 2.18, 41.40],        // Barcelona, España
-  [4.89, 52.36, 4.91, 52.38],        // Ámsterdam, Países Bajos
-  [151.20, -33.87, 151.22, -33.85],  // Sídney, Australia
-  [-58.39, -34.61, -58.37, -34.59],  // Buenos Aires, Argentina
-  [-99.14, 19.43, -99.12, 19.45],    // Ciudad de México, México
+function randomZone() {
+  let available = zonasUrbanas.filter((_, index) => !usedZones.includes(index));
+  let randomIndex = Math.floor(Math.random() * available.length);
+  let zoneIndex = zonasUrbanas.indexOf(available[randomIndex]);
+  usedZones.push(zoneIndex);
+  return zonasUrbanas[zoneIndex];
+}
 
-  // Venezuela y Colombia
-  [-66.92, 10.48, -66.88, 10.52],    // Caracas, Venezuela
-  [-75.59, 6.23, -75.55, 6.27],      // Medellín, Colombia
-  [-74.11, 4.59, -74.07, 4.63],      // Bogotá, Colombia
-  [-76.54, 3.40, -76.50, 3.44],      // Cali, Colombia
+async function loadLocation() {
+  document.getElementById('loadingScreen').style.display = 'flex';
 
-  // 5 ciudades más pobladas de EE.UU.
-  [-118.27, 34.03, -118.23, 34.07],  // Los Ángeles
-  [-87.65, 41.83, -87.61, 41.87],    // Chicago
-  [-95.40, 29.73, -95.36, 29.77],    // Houston
-  [-112.08, 33.44, -112.04, 33.48],  // Phoenix
-  [-75.17, 39.95, -75.13, 39.99],    // Filadelfia
-
-  // 5 ciudades más pobladas de UK
-  [-1.90, 52.48, -1.86, 52.52],     // Birmingham
-  [-1.55, 53.79, -1.51, 53.83],     // Leeds
-  [-4.26, 55.85, -4.22, 55.89],     // Glasgow
-  [-1.48, 53.36, -1.44, 53.40],     // Sheffield
-  [-2.25, 53.47, -2.21, 53.51],     // Mánchester
-
-  // 3 ciudades más pobladas de España
-  [-3.71, 40.41, -3.67, 40.45],     // Madrid
-  [-0.39, 39.46, -0.35, 39.50],     // Valencia
-  [-5.99, 37.36, -5.95, 37.40],     // Sevilla
-
-  // Ciudades más pobladas de Brasil
-  [-46.65, -23.57, -46.61, -23.53], // São Paulo
-  [-43.24, -22.92, -43.20, -22.88], // Río de Janeiro
-  [-47.91, -15.80, -47.87, -15.76], // Brasilia
-  [-38.52, -12.98, -38.48, -12.94], // Salvador
-  [-38.54, -3.73, -38.50, -3.69],   // Fortaleza
-
-  // 5 ciudades más pobladas de Japón
-  [139.62, 35.43, 139.66, 35.47],   // Yokohama
-  [135.50, 34.68, 135.54, 34.72],   // Osaka
-  [136.89, 35.16, 136.93, 35.20],   // Nagoya
-  [141.35, 43.06, 141.39, 43.10],   // Sapporo
-  [130.40, 33.58, 130.44, 33.62],   // Fukuoka
-
-  // Capitales del mundo
-  [12.49, 41.89, 12.53, 41.93],     // Roma, Italia
-  [-75.70, 45.42, -75.66, 45.46],   // Ottawa, Canadá
-  [149.12, -35.30, 149.16, -35.26], // Canberra, Australia
-  [2.34, 48.86, 2.38, 48.90],       // París, Francia (ya estaba)
-  [37.61, 55.75, 37.65, 55.79],     // Moscú, Rusia
-  [-77.04, -12.06, -77.00, -12.02], // Lima, Perú
-  [31.24, 30.05, 31.28, 30.09],     // El Cairo, Egipto
-
-  // Asia - nuevas ciudades
-  [103.83, 1.28, 103.87, 1.32],     // Singapur
-  [100.49, 13.72, 100.53, 13.76],   // Bangkok, Tailandia
-  [77.19, 28.61, 77.23, 28.65],     // Nueva Delhi, India
-  [105.81, 21.01, 105.85, 21.05],   // Hanói, Vietnam
-  [121.50, 25.02, 121.54, 25.06],   // Taipéi, Taiwán
-  [104.91, 11.54, 104.95, 11.58],   // Nom Pen, Camboya
-
-  // África
-  [28.01, -26.21, 28.05, -26.17],   // Johannesburgo, Sudáfrica
-  [18.45, -33.93, 18.49, -33.89],   // Ciudad del Cabo, Sudáfrica
-
-  // Oceanía
-  [174.75, -36.87, 174.79, -36.83], // Auckland, Nueva Zelanda
-  [172.61, -43.54, 172.65, -43.50], // Christchurch, Nueva Zelanda
-
-  // América del Sur
-  [-70.66, -33.46, -70.62, -33.42], // Santiago, Chile
-  [-56.22, -34.91, -56.18, -34.87], // Montevideo, Uruguay
-  [-80.26, -3.58, -80.22, -3.54],   // Tumbes, Perú
-
-  // México - otras ciudades
-  [-103.37, 20.65, -103.33, 20.69], // Guadalajara
-  [-106.45, 31.73, -106.41, 31.77], // Ciudad Juárez
-  [-116.93, 32.49, -116.89, 32.53], // Tijuana
-  [-100.33, 25.65, -100.29, 25.69], // Monterrey
-  [-99.61, 19.27, -99.57, 19.31]    // Toluca
-];
-
-async function loadFromBoundingBox() {
-  const bbox = zonasUrbanas[Math.floor(Math.random() * zonasUrbanas.length)];
+  const bbox = randomZone();
   const apiUrl = `https://graph.mapillary.com/images?bbox=${bbox.join(',')}&limit=1&fields=id,computed_geometry&access_token=${token}`;
 
   try {
     const res = await fetch(apiUrl);
     const data = await res.json();
     if (data?.data?.length > 0) {
-      if (userMarker) { map.removeLayer(userMarker); userMarker = null; }
-      if (realMarker) { map.removeLayer(realMarker); realMarker = null; }
-      if (line) { map.removeLayer(line); line = null; }
-
       const image = data.data[0];
-      viewer.moveTo(image.id);
+      await viewer.moveTo(image.id);
       const lon = image.computed_geometry.coordinates[0];
       const lat = image.computed_geometry.coordinates[1];
-      currentCoords = [lat, lon]; // Dentro de loadFromBoundingBox, después de: currentCoords = [lat, lon];
-document.getElementById('northCompass').style.display = lat >= 0 ? 'block' : 'none';
-document.getElementById('southCompass').style.display = lat < 0 ? 'block' : 'none';
-    } else {
-      loadFromBoundingBox();
+      currentCoords = [lat, lon];
     }
   } catch (error) {
     console.error("Error al cargar imagen:", error);
   }
-}
-loadFromBoundingBox();
 
-const map = L.map('map', {
-  zoomControl: true,
-  minZoom: 2,
-  maxZoom: 19,
-  maxBounds: [[-85, -180], [85, 180]],
-  maxBoundsViscosity: 1.0
-}).setView([20, 0], 2);
-
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: '&copy; OpenStreetMap contributors',
-  maxZoom: 19
-}).addTo(map);
-
-function showMap() {
-  document.getElementById('map').style.display = 'block';
-  document.getElementById('closeMap').style.display = 'block';
-  map.invalidateSize();
-}
-
-function hideMap() {
-  document.getElementById('map').style.display = 'none';
-  document.getElementById('closeMap').style.display = 'none';
-  document.getElementById('confirmSelection').style.display = 'none';
-}
-
-document.getElementById('guessBtn').addEventListener('click', showMap);
-document.getElementById('closeMap').addEventListener('click', hideMap);
-
-map.on('click', function(e) {
-  selectedCoords = [e.latlng.lat, e.latlng.lng];
-
-  if (userMarker) map.removeLayer(userMarker);
-
-  // Usamos un marcador circular como avatar
-  userMarker = L.marker(selectedCoords, {
-    icon: L.divIcon({
-      className: 'user-avatar'
-    })
-  }).addTo(map);
-
-  document.getElementById('confirmSelection').style.display = 'block';
-});
-
-document.getElementById('confirmSelection').addEventListener('click', () => {
-  if (!selectedCoords || !currentCoords) return;
-
-  if (realMarker) map.removeLayer(realMarker);
-  if (line) map.removeLayer(line);
-
-  // Marcador real azul clásico
-  realMarker = L.marker(currentCoords).addTo(map);
-
-  line = L.polyline([selectedCoords, currentCoords], {color: 'red'}).addTo(map);
-
+  // Espera 2 segundos extra para garantizar que todo esté listo
   setTimeout(() => {
-    const dist = calculateDistance(selectedCoords[0], selectedCoords[1], currentCoords[0], currentCoords[1]);
-    const puntos = Math.max(100, Math.round(5000 - dist * 30));
+    document.getElementById('loadingScreen').style.display = 'none';
+    startTimer();
+  }, 2000);
+}
 
-    let mensaje = "";
-    if (dist < 10) mensaje = "¡Épico! Solo " + dist.toFixed(1) + " km.";
-    else if (dist < 50) mensaje = "¡Muy cerca! " + dist.toFixed(1) + " km.";
-    else if (dist < 150) mensaje = "Nada mal, a " + dist.toFixed(1) + " km.";
-    else mensaje = "Lejos: " + dist.toFixed(1) + " km.";
-
-    const smallResult = document.getElementById('smallResult');
-    smallResult.innerHTML = `+${puntos} pts<br>${mensaje}<br><small>¡Nueva ubicación en 5s!</small>`;
-    smallResult.style.top = (map.getSize().y * 0.7) + 'px';
-    smallResult.style.left = '50%';
-    smallResult.style.transform = 'translateX(-50%)';
-    smallResult.style.display = 'block';
-
-    setTimeout(() => {
-      smallResult.style.display = 'none';
-      document.getElementById('newLoading').style.display = 'flex';
-      setTimeout(() => {
-        document.getElementById('newLoading').style.display = 'none';
-        loadFromBoundingBox();
-        hideMap();
-      }, 3000);
-    }, 5000);
-
-  }, 500);
-});
+function startTimer() {
+  timeLeft = 60;
+  document.getElementById('hud').innerText = `Tiempo: ${timeLeft}s`;
+  document.getElementById('roundInfo').innerText = `Ronda ${round}/${totalRounds}`;
+  
+  timer = setInterval(() => {
+    timeLeft--;
+    document.getElementById('hud').innerText = `Tiempo: ${timeLeft}s`;
+    if (timeLeft <= 0) {
+      clearInterval(timer);
+      timeLeft = 0;
+      evaluateGuess(null); // No adivinó a tiempo
+    }
+  }, 1000);
+}
 
 function calculateDistance(lat1, lon1, lat2, lon2) {
+  function toRad(x) { return x * Math.PI / 180; }
   const R = 6371;
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
   const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+            Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
             Math.sin(dLon/2) * Math.sin(dLon/2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
   return R * c;
 }
-</script>
 
-</body>
+function calculateScore(distance) {
+  if (distance === null) return 100;
+  if (distance > 3000) return 100;
+
+  const rawScore = 2500 * Math.max(0, (1 - Math.sqrt(distance / 3000)));
+  return Math.max(100, Math.round(rawScore));
+}
+
+// Leaflet Map
+const map = L.map('map', {
+  zoomControl: true,
+  minZoom: 2,
+  maxZoom: 5
+}).setView([20, 0], 2);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; OpenStreetMap contributors',
+  subdomains: 'abcd',
+  maxZoom: 19
+}).addTo(map);
+
+let playerMarker = null;
+let realMarker = null;
+let line = null;
+
+document.getElementById('guessBtn').addEventListener('click', () => {
+  document.getElementById('map').style.display = 'block';
+  document.getElementById('closeMap').style.display = 'block';
+});
+
+document.getElementById('closeMap').addEventListener('click', () => {
+  document.getElementById('map').style.display = 'none';
+  document.getElementById('closeMap').style.display = 'none';
+  document.getElementById('confirmSelection').style.display = 'none';
+  if (playerMarker) map.removeLayer(playerMarker);
+});
+
+map.on('click', function(e) {
+  if (playerMarker) map.removeLayer(playerMarker);
+  playerMarker = L.circleMarker(e.latlng, {
+    radius: 25,
+    color: "#00FFCE",
+    fillColor: "#00FFCE",
+    fillOpacity: 0.8
+  }).addTo(map);
+  selectedCoords = e.latlng;
+  document.getElementById('confirmSelection').style.display = 'block';
+});
+
+document.getElementById('confirmSelection').addEventListener('click', () => {
+  if (selectedCoords) {
+    evaluateGuess(selectedCoords);
+  }
+});
+
+function evaluateGuess(playerLatLng) {
+  clearInterval(timer);
+
+  if (playerLatLng === null) {
+    playerLatLng = { lat: 0, lng: 0 }; // Error safe
+  }
+
+  if (realMarker) map.removeLayer(realMarker);
+  if (line) map.removeLayer(line);
+
+  realMarker = L.marker(currentCoords, { title: "Ubicación real" }).addTo(map);
+
+  if (playerMarker) {
+    line = L.polyline([playerLatLng, currentCoords], { color: 'red' }).addTo(map);
+  }
+
+  const dist = calculateDistance(playerLatLng.lat, playerLatLng.lng, currentCoords[0], currentCoords[1]);
+  const points = calculateScore(dist);
+
+  totalPoints += points;
+
+  setTimeout(() => {
+    document.getElementById('resultMsg').innerHTML = `
+      Estuviste a <strong>${dist.toFixed(1)} km</strong><br>
+      Obtuviste <strong>${points}</strong> puntos.
+    `;
+    document.getElementById('resultMsg').style.display = 'block';
+  }, 500);
+
+  setTimeout(() => {
+    document.getElementById('resultMsg').style.display = 'none';
+    round++;
+    if (round <= totalRounds) {
+      loadLocation();
+    } else {
+      endGame();
+    }
+  }, 5000);
+}
+
+function endGame() {
+  alert(`¡Juego terminado!\nPuntaje total: ${totalPoints}`);
+  location.reload();
+}
+
+// Inicial
+loadLocation();
+  </script>
+  </body>
 </html>
