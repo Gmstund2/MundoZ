@@ -190,10 +190,11 @@ const viewer = new mapillary.Viewer({
   accessToken: token
 });
 
-// Función para actualizar la brújula, pero sin modificar la imagen de Mapillary
+// Función para actualizar la brújula
 function updateCompass(bearing) {
   const compass = document.getElementById('compass');
-  compass.style.transform = `rotate(${bearing}deg)`; // Esto rota la brújula con el ángulo correcto
+  // Ajustamos la rotación del valor de bearing
+  compass.style.transform = `rotate(${bearing}deg)`; 
 }
 
 // Al cargar imagen inicial
@@ -335,4 +336,4 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 </script>
 
 </body>
-</html>
+  </html>
