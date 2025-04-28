@@ -193,8 +193,8 @@ const viewer = new mapillary.Viewer({
 // Función para actualizar la brújula
 function updateCompass(bearing) {
   const compass = document.getElementById('compass');
-  // Ajustamos la rotación del valor de bearing
-  compass.style.transform = `rotate(${bearing}deg)`; 
+  const angle = (bearing + 360) % 360; // Aseguramos que el bearing esté en el rango [0, 360]
+  compass.style.transform = `rotate(${angle}deg)`; 
 }
 
 // Al cargar imagen inicial
@@ -336,4 +336,4 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 </script>
 
 </body>
-  </html>
+</html>
