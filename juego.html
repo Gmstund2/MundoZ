@@ -119,6 +119,18 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+    .mly-container .mly-component-navigation {
+      top: 60px !important;
+      transform: scale(1.5);
+    }
+    /* Avatar del jugador */
+    .user-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background-color: #00FFCE;
+      border: 3px solid white;
+    }
   </style>
 </head>
 
@@ -160,21 +172,35 @@ const viewer = new mapillary.Viewer({
   accessToken: token
 });
 
-async function loadFromBoundingBox() {
-  const bbox = [
-    [2.28, 48.85, 2.36, 48.87], [139.68, 35.68, 139.70, 35.70],
-    [-74.01, 40.71, -73.99, 40.73], [-99.14, 19.43, -99.12, 19.45]
-  ][Math.floor(Math.random() * 4)];
+viewer.on('image', () => {
+  document.getElementById('loadingScreen').style.display = 'none';
+});
 
+const zonasUrbanas = [
+  [2.28, 48.85, 2.36, 48.87], [139.68, 35.68, 139.70, 35.70],
+  [-74.01, 40.71, -73.99, 40.73], [13.39, 52.51, 13.41, 52.53],
+  [-0.12, 51.50, -0.10, 51.52], [2.16, 41.38, 2.18, 41.40],
+  [4.89, 52.36, 4.91, 52.38], [151.20, -33.87, 151.22, -33.85],
+  [-58.39, -34.61, -58.37, -34.59], [-99.14, 19.43, -99.12, 19.45]
+];
+
+async function loadFromBoundingBox() {
+  const bbox = zonasUrbanas[Math.floor(Math.random() * zonasUrbanas.length)];
   const apiUrl = `https://graph.mapillary.com/images?bbox=${bbox.join(',')}&limit=1&fields=id,computed_geometry&access_token=${token}`;
 
   try {
     const res = await fetch(apiUrl);
     const data = await res.json();
     if (data?.data?.length > 0) {
+      if (userMarker) { map.removeLayer(userMarker); userMarker = null; }
+      if (realMarker) { map.removeLayer(realMarker); realMarker = null; }
+      if (line) { map.removeLayer(line); line = null; }
+
       const image = data.data[0];
       viewer.moveTo(image.id);
-      currentCoords = [image.computed_geometry.coordinates[1], image.computed_geometry.coordinates[0]];
+      const lon = image.computed_geometry.coordinates[0];
+      const lat = image.computed_geometry.coordinates[1];
+      currentCoords = [lat, lon];
     } else {
       loadFromBoundingBox();
     }
@@ -182,9 +208,103 @@ async function loadFromBoundingBox() {
     console.error("Error al cargar imagen:", error);
   }
 }
-
 loadFromBoundingBox();
+
+const map = L.map('map', {
+  zoomControl: true,
+  minZoom: 2,
+  maxZoom: 19,
+  maxBounds: [[-85, -180], [85, 180]],
+  maxBoundsViscosity: 1.0
+}).setView([20, 0], 2);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; OpenStreetMap contributors',
+  maxZoom: 19
+}).addTo(map);
+
+function showMap() {
+  document.getElementById('map').style.display = 'block';
+  document.getElementById('closeMap').style.display = 'block';
+  map.invalidateSize();
+}
+
+function hideMap() {
+  document.getElementById('map').style.display = 'none';
+  document.getElementById('closeMap').style.display = 'none';
+  document.getElementById('confirmSelection').style.display = 'none';
+}
+
+document.getElementById('guessBtn').addEventListener('click', showMap);
+document.getElementById('closeMap').addEventListener('click', hideMap);
+
+map.on('click', function(e) {
+  selectedCoords = [e.latlng.lat, e.latlng.lng];
+
+  if (userMarker) map.removeLayer(userMarker);
+
+  // Usamos un marcador circular como avatar
+  userMarker = L.marker(selectedCoords, {
+    icon: L.divIcon({
+      className: 'user-avatar'
+    })
+  }).addTo(map);
+
+  document.getElementById('confirmSelection').style.display = 'block';
+});
+
+document.getElementById('confirmSelection').addEventListener('click', () => {
+  if (!selectedCoords || !currentCoords) return;
+
+  if (realMarker) map.removeLayer(realMarker);
+  if (line) map.removeLayer(line);
+
+  // Marcador real azul clásico
+  realMarker = L.marker(currentCoords).addTo(map);
+
+  line = L.polyline([selectedCoords, currentCoords], {color: 'red'}).addTo(map);
+
+  setTimeout(() => {
+    const dist = calculateDistance(selectedCoords[0], selectedCoords[1], currentCoords[0], currentCoords[1]);
+    const puntos = Math.max(100, Math.round(5000 - dist * 30));
+
+    let mensaje = "";
+    if (dist < 10) mensaje = "¡Épico! Solo " + dist.toFixed(1) + " km.";
+    else if (dist < 50) mensaje = "¡Muy cerca! " + dist.toFixed(1) + " km.";
+    else if (dist < 150) mensaje = "Nada mal, a " + dist.toFixed(1) + " km.";
+    else mensaje = "Lejos: " + dist.toFixed(1) + " km.";
+
+    const smallResult = document.getElementById('smallResult');
+    smallResult.innerHTML = `+${puntos} pts<br>${mensaje}<br><small>¡Nueva ubicación en 5s!</small>`;
+    smallResult.style.top = (map.getSize().y * 0.7) + 'px';
+    smallResult.style.left = '50%';
+    smallResult.style.transform = 'translateX(-50%)';
+    smallResult.style.display = 'block';
+
+    setTimeout(() => {
+      smallResult.style.display = 'none';
+      document.getElementById('newLoading').style.display = 'flex';
+      setTimeout(() => {
+        document.getElementById('newLoading').style.display = 'none';
+        loadFromBoundingBox();
+        hideMap();
+      }, 3000);
+    }, 5000);
+
+  }, 500);
+});
+
+function calculateDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+            Math.sin(dLon/2) * Math.sin(dLon/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  return R * c;
+}
 </script>
 
 </body>
-</html>
+  </html>
