@@ -131,6 +131,20 @@
       background-color: #00FFCE;
       border: 3px solid white;
     }
+    /* Agregar al final del <style> */
+#compassContainer {
+    position: absolute;
+    top: 100px; /* 60px debajo del botón del mapa */
+    left: 20px;
+    z-index: 1000;
+}
+
+.compass-icon {
+    width: 40px;
+    height: 40px;
+    display: none; /* Ocultos por defecto */
+    filter: drop-shadow(0 0 5px #00FFCE);
+      }
   </style>
 </head>
 
@@ -147,7 +161,11 @@
 </div>
 
 <button id="guessBtn">🗺️</button>
-
+<!-- Colocar justo después del botón guessBtn -->
+<div id="compassContainer">
+    <img src="assets/667716.png" id="northCompass" class="compass-icon">
+    <img src="assets/7509289.png" id="southCompass" class="compass-icon">
+</div>
 <div id="mly"></div>
 
 <div id="map"></div>
@@ -200,7 +218,9 @@ async function loadFromBoundingBox() {
       viewer.moveTo(image.id);
       const lon = image.computed_geometry.coordinates[0];
       const lat = image.computed_geometry.coordinates[1];
-      currentCoords = [lat, lon];
+      currentCoords = [lat, lon]; // Dentro de loadFromBoundingBox, después de: currentCoords = [lat, lon];
+document.getElementById('northCompass').style.display = lat >= 0 ? 'block' : 'none';
+document.getElementById('southCompass').style.display = lat < 0 ? 'block' : 'none';
     } else {
       loadFromBoundingBox();
     }
