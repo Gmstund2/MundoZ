@@ -190,10 +190,10 @@ const viewer = new mapillary.Viewer({
   accessToken: token
 });
 
-// Función para actualizar la brújula
+// Función para actualizar la brújula, pero sin modificar la imagen de Mapillary
 function updateCompass(bearing) {
   const compass = document.getElementById('compass');
-  compass.style.transform = `rotate(${-bearing}deg)`;
+  compass.style.transform = `rotate(${-bearing}deg)`; // Esto solo rota la brújula, no la imagen
 }
 
 // Al cargar imagen inicial
