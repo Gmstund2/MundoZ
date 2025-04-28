@@ -217,13 +217,95 @@ const viewer = new mapillary.Viewer({
 viewer.on('image', () => {
   document.getElementById('loadingScreen').style.display = 'none';
 });
-
+  
 const zonasUrbanas = [
-  [2.28, 48.85, 2.36, 48.87], [139.68, 35.68, 139.70, 35.70],
-  [-74.01, 40.71, -73.99, 40.73], [13.39, 52.51, 13.41, 52.53],
-  [-0.12, 51.50, -0.10, 51.52], [2.16, 41.38, 2.18, 41.40],
-  [4.89, 52.36, 4.91, 52.38], [151.20, -33.87, 151.22, -33.85],
-  [-58.39, -34.61, -58.37, -34.59], [-99.14, 19.43, -99.12, 19.45]
+  // Ciudades originales
+  [2.28, 48.85, 2.36, 48.87],        // París, Francia
+  [139.68, 35.68, 139.70, 35.70],    // Tokio, Japón
+  [-74.01, 40.71, -73.99, 40.73],    // Nueva York, EE.UU.
+  [13.39, 52.51, 13.41, 52.53],      // Berlín, Alemania
+  [-0.12, 51.50, -0.10, 51.52],      // Londres, Reino Unido
+  [2.16, 41.38, 2.18, 41.40],        // Barcelona, España
+  [4.89, 52.36, 4.91, 52.38],        // Ámsterdam, Países Bajos
+  [151.20, -33.87, 151.22, -33.85],  // Sídney, Australia
+  [-58.39, -34.61, -58.37, -34.59],  // Buenos Aires, Argentina
+  [-99.14, 19.43, -99.12, 19.45],    // Ciudad de México, México
+
+  // Venezuela y Colombia
+  [-66.92, 10.48, -66.88, 10.52],    // Caracas, Venezuela
+  [-75.59, 6.23, -75.55, 6.27],      // Medellín, Colombia
+  [-74.11, 4.59, -74.07, 4.63],      // Bogotá, Colombia
+  [-76.54, 3.40, -76.50, 3.44],      // Cali, Colombia
+
+  // 5 ciudades más pobladas de EE.UU.
+  [-118.27, 34.03, -118.23, 34.07],  // Los Ángeles
+  [-87.65, 41.83, -87.61, 41.87],    // Chicago
+  [-95.40, 29.73, -95.36, 29.77],    // Houston
+  [-112.08, 33.44, -112.04, 33.48],  // Phoenix
+  [-75.17, 39.95, -75.13, 39.99],    // Filadelfia
+
+  // 5 ciudades más pobladas de UK
+  [-1.90, 52.48, -1.86, 52.52],     // Birmingham
+  [-1.55, 53.79, -1.51, 53.83],     // Leeds
+  [-4.26, 55.85, -4.22, 55.89],     // Glasgow
+  [-1.48, 53.36, -1.44, 53.40],     // Sheffield
+  [-2.25, 53.47, -2.21, 53.51],     // Mánchester
+
+  // 3 ciudades más pobladas de España
+  [-3.71, 40.41, -3.67, 40.45],     // Madrid
+  [-0.39, 39.46, -0.35, 39.50],     // Valencia
+  [-5.99, 37.36, -5.95, 37.40],     // Sevilla
+
+  // Ciudades más pobladas de Brasil
+  [-46.65, -23.57, -46.61, -23.53], // São Paulo
+  [-43.24, -22.92, -43.20, -22.88], // Río de Janeiro
+  [-47.91, -15.80, -47.87, -15.76], // Brasilia
+  [-38.52, -12.98, -38.48, -12.94], // Salvador
+  [-38.54, -3.73, -38.50, -3.69],   // Fortaleza
+
+  // 5 ciudades más pobladas de Japón
+  [139.62, 35.43, 139.66, 35.47],   // Yokohama
+  [135.50, 34.68, 135.54, 34.72],   // Osaka
+  [136.89, 35.16, 136.93, 35.20],   // Nagoya
+  [141.35, 43.06, 141.39, 43.10],   // Sapporo
+  [130.40, 33.58, 130.44, 33.62],   // Fukuoka
+
+  // Capitales del mundo
+  [12.49, 41.89, 12.53, 41.93],     // Roma, Italia
+  [-75.70, 45.42, -75.66, 45.46],   // Ottawa, Canadá
+  [149.12, -35.30, 149.16, -35.26], // Canberra, Australia
+  [2.34, 48.86, 2.38, 48.90],       // París, Francia (ya estaba)
+  [37.61, 55.75, 37.65, 55.79],     // Moscú, Rusia
+  [-77.04, -12.06, -77.00, -12.02], // Lima, Perú
+  [31.24, 30.05, 31.28, 30.09],     // El Cairo, Egipto
+
+  // Asia - nuevas ciudades
+  [103.83, 1.28, 103.87, 1.32],     // Singapur
+  [100.49, 13.72, 100.53, 13.76],   // Bangkok, Tailandia
+  [77.19, 28.61, 77.23, 28.65],     // Nueva Delhi, India
+  [105.81, 21.01, 105.85, 21.05],   // Hanói, Vietnam
+  [121.50, 25.02, 121.54, 25.06],   // Taipéi, Taiwán
+  [104.91, 11.54, 104.95, 11.58],   // Nom Pen, Camboya
+
+  // África
+  [28.01, -26.21, 28.05, -26.17],   // Johannesburgo, Sudáfrica
+  [18.45, -33.93, 18.49, -33.89],   // Ciudad del Cabo, Sudáfrica
+
+  // Oceanía
+  [174.75, -36.87, 174.79, -36.83], // Auckland, Nueva Zelanda
+  [172.61, -43.54, 172.65, -43.50], // Christchurch, Nueva Zelanda
+
+  // América del Sur
+  [-70.66, -33.46, -70.62, -33.42], // Santiago, Chile
+  [-56.22, -34.91, -56.18, -34.87], // Montevideo, Uruguay
+  [-80.26, -3.58, -80.22, -3.54],   // Tumbes, Perú
+
+  // México - otras ciudades
+  [-103.37, 20.65, -103.33, 20.69], // Guadalajara
+  [-106.45, 31.73, -106.41, 31.77], // Ciudad Juárez
+  [-116.93, 32.49, -116.89, 32.53], // Tijuana
+  [-100.33, 25.65, -100.29, 25.69], // Monterrey
+  [-99.61, 19.27, -99.57, 19.31]    // Toluca
 ];
 
 async function loadFromBoundingBox() {
