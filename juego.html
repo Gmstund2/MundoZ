@@ -322,7 +322,8 @@ document.getElementById('confirmSelection').addEventListener('click', () => {
 
   setTimeout(() => {
     const dist = calculateDistance(selectedCoords[0], selectedCoords[1], currentCoords[0], currentCoords[1]);
-    const puntos = Math.max(100, Math.round(5000 - dist * 30));
+    let puntos = 5000 * Math.pow(0.9995, dist * 1000);
+puntos = Math.round(Math.max(100, puntos));
 
     let mensaje = "";
     if (dist < 10) mensaje = "¡Épico! Solo " + dist.toFixed(1) + " km.";
