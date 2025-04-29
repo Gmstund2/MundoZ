@@ -456,6 +456,31 @@ function updateRoundDisplay() {
       }
     });
   });
+    function mostrarResultadosFinales() {
+  // Mostrar puntos
+  document.getElementById('totalPointsText').innerText = `Puntos totales: ${puntosTotales}`;
+
+  // Elegir placa según puntos
+  let placa = '';
+  if (puntosTotales >= 23000) placa = '🏆 LEYENDA MUNDIAL';
+  else if (puntosTotales >= 20000) placa = '⭐ EXPLORADOR ÉPICO';
+  else if (puntosTotales >= 17000) placa = '✨ VIAJERO TALENTOSO';
+  else if (puntosTotales >= 15000) placa = '🎒 CONQUISTADOR CASUAL';
+  else placa = '📍 TURISTA NOVATO';
+
+  document.getElementById('placaFinal').innerText = placa;
+  document.getElementById('finalScorePanel').style.display = 'block';
+
+  // Reiniciar después de 10s si quieres
+  setTimeout(() => {
+    document.getElementById('finalScorePanel').style.display = 'none';
+    puntosTotales = 100;
+    currentRound = 1;
+    usedLocations = [];
+    updateRoundDisplay();
+    loadFromBoundingBox();
+  }, 10000);
+    }
   </script>
   <div id="finalScorePanel" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%);
 background:rgba(0,0,0,0.9); color:#00FFCE; padding:30px 50px; border-radius:20px; text-align:center;
