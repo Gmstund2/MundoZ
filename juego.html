@@ -21,6 +21,23 @@
       width: 100%;
       height: 100vh;
     }
+    
+#audioBtn {
+  position: absolute;
+  top: 30px;
+  left: 20px;
+  z-index: 1000;
+  background: rgba(0,0,0,0.8);
+  border: 2px solid #00FFCE;
+  border-radius: 14px;
+  padding: 10px;
+  cursor: pointer;
+  box-shadow: 0 0 12px #00FFCE88;
+}
+#audioBtn img {
+  width: 40px;
+  height: 40px;
+}
     #guessBtn {
       position: absolute;
       top: 100px;
@@ -153,7 +170,9 @@
   <div class="loader"></div>
   <p>Cambiando de ubicación...</p>
 </div>
-
+<button id="audioBtn">
+  <img src="assets/descarga.png" alt="Audio" style="width:40px; height:40px;">
+</button>
 <button id="guessBtn">🗺️</button>
 
 
@@ -404,6 +423,25 @@ function updateRoundDisplay() {
   document.getElementById('roundCounter').innerText = `Ronda ${currentRound} de 5`;
 }
 </script>
+  <script>
+  const audioBtn = document.getElementById('audioBtn');
+  const music = document.getElementById('backgroundMusic');
+  let isPlaying = false;
 
+  audioBtn.addEventListener('click', () => {
+    if (!isPlaying) {
+      music.play();
+      isPlaying = true;
+    } else {
+      music.pause();
+      music.currentTime = 0;
+      isPlaying = false;
+    }
+  });
+  </script>
+<audio id="backgroundMusic" loop>
+  <source src="https://upload.wikimedia.org/wikipedia/commons/b/bd/La_pastora_Caterina_-_Guitarra_solo.wav" type="audio/wav">
+  Tu navegador no soporta audio HTML5.
+</audio>
 </body>
 </html>
