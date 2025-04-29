@@ -422,23 +422,29 @@ function forceNextLocation() {
 function updateRoundDisplay() {
   document.getElementById('roundCounter').innerText = `Ronda ${currentRound} de 5`;
 }
-</script>
   <script>
   const audioBtn = document.getElementById('audioBtn');
   const music = document.getElementById('backgroundMusic');
   let isPlaying = false;
 
-  audioBtn.addEventListener('click', () => {
+  audioBtn.addEventListener('click', async () => {
     if (!isPlaying) {
-      music.play();
-      isPlaying = true;
+      try {
+        await music.play();
+        isPlaying = true;
+      } catch (error) {
+        console.error('Error al intentar reproducir la música:', error);
+        alert('Error reproduciendo audio. Intenta hacer clic de nuevo.');
+      }
     } else {
       music.pause();
       music.currentTime = 0;
       isPlaying = false;
     }
   });
-  </script>
+</script>
+</script>
+
 <audio id="backgroundMusic" loop>
   <source src="https://upload.wikimedia.org/wikipedia/commons/b/bd/La_pastora_Caterina_-_Guitarra_solo.wav" type="audio/wav">
   Tu navegador no soporta audio HTML5.
