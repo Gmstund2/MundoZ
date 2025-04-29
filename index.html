@@ -189,7 +189,7 @@
   </div>
 
   <!-- Botones sueltos -->
-  <button class="btn-secundario" onclick="window.location.href='juego.html'">Jugar como Invitado</button>
+  <button class="btn-secundario" onclick="mostrarSelector()">Jugar como Invitado</button>
   <button class="btn-clasificatoria" onclick="window.location.href='clasificatoria.html'">Clasificatoria</button>
 
 </div>
@@ -201,6 +201,26 @@
     📷 Instagram | ▶️ YouTube | 🕹️ Discord
   </div>
 </footer>
+<div id="selectorPersonaje" style="display:none; background:#111; padding:30px; border: 4px solid #00FFCE; border-radius:20px; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); z-index:9999;">
+  <h2 style="text-align:center; color:#00FFCE;">Elige tu personaje</h2>
+  <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:20px; margin-top:20px;">
+    <img src="assets/IMG-20250428-WA0034.jpg" onclick="elegirPersonaje(this.src)" style="height:100px; cursor:pointer; border: 3px solid transparent;">
+    <img src="assets/IMG-20250428-WA0026.jpg" onclick="elegirPersonaje(this.src)" style="height:100px; cursor:pointer; border: 3px solid transparent;">
+    <img src="assets/IMG-20250428-WA0029.jpg" onclick="elegirPersonaje(this.src)" style="height:100px; cursor:pointer; border: 3px solid transparent;">
+    <img src="assets/IMG-20250428-WA0027.jpg" onclick="elegirPersonaje(this.src)" style="height:100px; cursor:pointer; border: 3px solid transparent;">
+    <img src="assets/IMG-20250426-WA0000(2).jpg" onclick="elegirPersonaje(this.src)" style="height:100px; cursor:pointer; border: 3px solid transparent;">
+  </div>
+</div>
 
+<script>
+  function mostrarSelector() {
+    document.getElementById('selectorPersonaje').style.display = 'block';
+  }
+
+  function elegirPersonaje(src) {
+    localStorage.setItem('personajeSeleccionado', src);
+    window.location.href = 'juego.html';
+  }
+</script>
 </body>
 </html>
