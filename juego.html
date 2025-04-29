@@ -416,10 +416,9 @@ function forceNextLocation() {
     currentRound++;
     updateRoundDisplay();
     if (currentRound > 5) {
-      alert('¡Juego terminado!');
-      currentRound = 1;
-      usedLocations = [];
-    }
+  mostrarResultadosFinales();
+  return;
+  }
     loadFromBoundingBox();
     hideMap();
   }, 4000);
