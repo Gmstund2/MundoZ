@@ -130,22 +130,8 @@
       border-radius: 50%;
       background-color: #00FFCE;
       border: 3px solid white;
-    }
-    #compassContainer {
-      position: absolute;
-      top: 140px;
-      left: 20px;
-      z-index: 1000;
-      width: 40px;
-      height: 40px;
-      background: rgba(0,0,0,0.8);
-      border-radius: 14px;
-      border: 2px solid #00FFCE;
-      box-shadow: 0 0 12px #00FFCE88;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+      }
+    
     .compass-icon {
       width: 70%;
       height: 80%;
@@ -170,10 +156,6 @@
 
 <button id="guessBtn">🗺️</button>
 
-<div id="compassContainer">
-    <img src="assets/667716.png" id="northCompass" class="compass-icon">
-    <img src="assets/7509289.png" id="southCompass" class="compass-icon">
-</div>
 
 <div id="mly"></div>
 
@@ -270,8 +252,6 @@ async function loadFromBoundingBox() {
       const lat = image.computed_geometry.coordinates[1];
       currentCoords = [lat, lon];
 
-      document.getElementById('northCompass').style.display = lat >= 0 ? 'block' : 'none';
-      document.getElementById('southCompass').style.display = lat < 0 ? 'block' : 'none';
       
       startTimer();
     } else {
