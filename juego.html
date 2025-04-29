@@ -342,14 +342,7 @@ document.getElementById('confirmSelection').addEventListener('click', () => {
   setTimeout(() => {
     const dist = calculateDistance(selectedCoords[0], selectedCoords[1], currentCoords[0], currentCoords[1]);
     
-let puntos = Math.round(
-  dist < 0.25 ? 5000 :        // menos de 250 metros: 5000 pts
-  dist < 1 ? 4500 :           // menos de 1 km: 4500 pts
-  dist < 5 ? 4000 - dist * 100 :  // de 1 a 5 km: entre 4000 y 3500 pts
-  dist < 20 ? 3500 - dist * 50 :  // de 5 a 20 km: entre 3500 y 2500 pts
-  dist < 100 ? 2500 - dist * 10 : // de 20 a 100 km: hasta 1500 pts
-  Math.max(100, 1500 - dist * 2)  // más de 100 km: no baja de 100 pts
-);
+let puntos = Math.round(5000 / (1 + Math.pow(dist / 0.002, 0.6)));
     let mensaje = "";
     if (dist < 10) mensaje = "¡Épico! Solo " + dist.toFixed(1) + " km.";
     else if (dist < 50) mensaje = "¡Muy cerca! " + dist.toFixed(1) + " km.";
