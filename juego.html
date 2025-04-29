@@ -423,25 +423,29 @@ function updateRoundDisplay() {
   document.getElementById('roundCounter').innerText = `Ronda ${currentRound} de 5`;
 }
   
-  const audioBtn = document.getElementById('audioBtn');
-  const music = document.getElementById('backgroundMusic');
-  let isPlaying = false;
 
-  audioBtn.addEventListener('click', async () => {
-    if (!isPlaying) {
-      try {
-        await music.play();
-        isPlaying = true;
-      } catch (error) {
-        console.error('Error al intentar reproducir la música:', error);
-        alert('Error reproduciendo audio. Intenta hacer clic de nuevo.');
+  window.addEventListener('DOMContentLoaded', () => {
+    const audioBtn = document.getElementById('audioBtn');
+    const music = document.getElementById('backgroundMusic');
+    let isPlaying = false;
+
+    audioBtn.addEventListener('click', async () => {
+      if (!isPlaying) {
+        try {
+          await music.play();
+          isPlaying = true;
+        } catch (error) {
+          console.error('Error al intentar reproducir la música:', error);
+          alert('Error reproduciendo audio. Intenta hacer clic de nuevo.');
+        }
+      } else {
+        music.pause();
+        music.currentTime = 0;
+        isPlaying = false;
       }
-    } else {
-      music.pause();
-      music.currentTime = 0;
-      isPlaying = false;
-    }
-  });
+    });
+
+
 </script>
 
 <audio id="backgroundMusic" loop>
