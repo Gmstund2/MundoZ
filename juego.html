@@ -350,6 +350,8 @@ let puntos = Math.round(
   dist < 100 ? 2500 - dist * 10 :
   Math.max(100, 1500 - dist * 2)
 );
+    puntosTotales += puntos;
+document.getElementById('scoreDisplay').innerText = `Puntos: ${puntosTotales}`;
     let mensaje = "";
     if (dist < 10) mensaje = "¡Épico! Solo " + dist.toFixed(1) + " km.";
     else if (dist < 50) mensaje = "¡Muy cerca! " + dist.toFixed(1) + " km.";
