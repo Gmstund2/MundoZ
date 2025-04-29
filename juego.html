@@ -428,6 +428,21 @@ function updateRoundDisplay() {
     const music = document.getElementById('backgroundMusic');
     let isPlaying = false;
 
+    
+
+
+</script>
+
+<audio id="backgroundMusic" loop>
+  <source src="assets/La_pastora_Caterina_-_Guitarra_solo.mp3" type="audio/mpeg">
+  Tu navegador no soporta audio HTML5.
+</audio>
+  <script>
+  window.addEventListener('DOMContentLoaded', () => {
+    const audioBtn = document.getElementById('audioBtn');
+    const music = document.getElementById('backgroundMusic');
+    let isPlaying = false;
+
     audioBtn.addEventListener('click', async () => {
       if (!isPlaying) {
         try {
@@ -444,14 +459,6 @@ function updateRoundDisplay() {
       }
     });
   });
-</script>
-
-
-</script>
-
-<audio id="backgroundMusic" loop>
-  <source src="assets/La_pastora_Caterina_-_Guitarra_solo.mp3" type="audio/mpeg">
-  Tu navegador no soporta audio HTML5.
-</audio>
+  </script>
 </body>
 </html>
