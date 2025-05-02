@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>StreetWorld - Login</title>
+
+  <!-- Fuente Orbitron para botones e inputs -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+<style>
+  #selectorPersonaje img:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px #00FFCE;
+  }
+</style>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: url('assets/file_000000006a9c61f6b4b441eb288c9353.png') no-repeat center center fixed;
+      background-size: cover;
+      font-family: 'Orbitron', sans-serif;
+      color: #00FFCE;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 100vh;
+    }
+
+    /* Botones flotantes arriba */
+    .ranking-btn, .perfil-btn {
+      position: fixed;
+      top: 50px;
+      padding: 20px 40px;
+      font-size: 24px;
+      background: #00FFCE;
+      color: #111;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 0 20px #00FFCE88;
+      font-family: 'Orbitron', sans-serif;
+      z-index: 5;
+    }
+
+    .ranking-btn {
+      right: 40px;
+    }
+
+    .perfil-btn {
+      left: 40px;
+    }
+
+    /* Contenedor principal */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 30px;
+      margin-top: 30px;
+    }
+
+    /* Título principal */
+    .titulo-principal {
+      font-size: 64px;
+      color: #00FFCE;
+      text-shadow: 0 0 10px #00FFCE, 0 0 20px #00FFCE;
+      margin-bottom: 50px;
+      text-align: center;
+    }
+
+    /* Caja login */
+    .login-box {
+      background: #ffffff;
+      padding: 80px 50px;
+      border-radius: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 30px;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Inputs */
+    .input-field {
+      width: 500px;
+      font-size: 28px;
+      padding: 20px 10px;
+      background: transparent;
+      border: none;
+      border-bottom: 4px solid #000000; /* Negro */
+      color: #00FFCE;
+      outline: none;
+      text-align: center;
+    }
+
+    /* Botones dentro del login-box */
+    .btn {
+      padding: 24px 60px;
+      font-size: 34px;
+      background: #00FFCE;
+      color: #111;
+      border: 3px solid #000000; /* Bordes negros */
+      border-radius: 16px;
+      cursor: pointer;
+      box-shadow: 0 0 20px #00FFCE88;
+      font-family: 'Orbitron', sans-serif;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      width: 400px;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 35px #00FFCE;
+    }
+
+    /* Botón secundario */
+    .btn-secundario {
+      padding: 20px 50px;
+      font-size: 28px;
+      background: transparent;
+      color: #00FFCE;
+      border: 3px solid #00FFCE;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      width: 380px;
+    }
+
+    .btn-secundario:hover {
+      transform: scale(1.05);
+      background: #00FFCE22;
+    }
+
+    /* Botón Clasificatoria */
+    .btn-clasificatoria {
+      margin-top: 50px;
+      padding: 26px 70px;
+      font-size: 36px;
+      background: #00FFCE;
+      color: #111;
+      border: none;
+      border-radius: 18px;
+      cursor: pointer;
+      box-shadow: 0 0 20px #00FFCE88;
+      font-family: 'Orbitron', sans-serif;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      width: 420px;
+    }
+
+    .btn-clasificatoria:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 40px #00FFCE;
+    }
+
+    /* Footer grande */
+    footer {
+      background: #ffffff;
+      color: #111;
+      text-align: center;
+      padding: 50px 20px;
+      font-size: 20px;
+      font-family: Arial, sans-serif;
+    }
+
+    .footer-redes {
+      margin-top: 15px;
+      font-size: 26px;
+    }
+  </style>
+
+</head>
+
+<body>
+
+<!-- Botones flotantes -->
+<button class="ranking-btn" onclick="window.location.href='ranking.html'">Ranking</button>
+<button class="perfil-btn" onclick="window.location.href='perfil.html'">Perfil</button>
+
+<!-- Contenido principal -->
+<div class="main-content">
+
+  <!-- Título gigante -->
+  <h1 class="titulo-principal">StreetWorld Finals</h1>
+
+  <!-- Caja de login -->
+  <div class="login-box">
+    <input type="text" class="input-field" placeholder="Nombre de Usuario">
+    <input type="password" class="input-field" placeholder="Contraseña">
+    <button class="btn" onclick="window.location.href='juego.html'">Login</button>
+    <button class="btn" onclick="window.location.href='registro.html'">Registrarse</button>
+  </div>
+
+  <!-- Botones sueltos -->
+  <button class="btn-secundario" onclick="mostrarSelector()">Jugar como Invitado</button>
+  <button class="btn-clasificatoria" onclick="window.location.href='clasificatoria.html'">Clasificatoria</button>
+
+</div>
+
+<!-- Footer grande -->
+<footer>
+  StreetWorld Finals © 2025 | contacto@streetworld.com
+  <div class="footer-redes">
+    📷 Instagram | ▶️ YouTube | 🕹️ Discord
+  </div>
+</footer>
+<div id="selectorPersonaje" style="display:none; background:#111; padding:30px; border: 4px solid #00FFCE; border-radius:20px; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); z-index:9999;">
+  <h2 style="text-align:center; color:#00FFCE;">Elige tu personaje</h2>
+  <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:20px; margin-top:20px;">
+    <img src="assets/IMG-20250428-WA0034.jpg" onclick="elegirPersonaje(this.src)" style="width:150px; height:150px; cursor:pointer; border-radius:50%; border: 4px solid #00FFCE; object-fit:cover; transition: transform 0.3s;">
+    <img src="assets/IMG-20250428-WA0026.jpg" onclick="elegirPersonaje(this.src)" style="width:150px; height:150px; cursor:pointer; border-radius:50%; border: 4px solid #00FFCE; object-fit:cover; transition: transform 0.3s;">
+    <img src="assets/IMG-20250428-WA0029.jpg" onclick="elegirPersonaje(this.src)" style="width:150px; height:150px; cursor:pointer; border-radius:50%; border: 4px solid #00FFCE; object-fit:cover; transition: transform 0.3s;">
+    <img src="assets/IMG-20250428-WA0027.jpg" onclick="elegirPersonaje(this.src)" style="width:150px; height:150px; cursor:pointer; border-radius:50%; border: 4px solid #00FFCE; object-fit:cover; transition: transform 0.3s;">
+    <img src="assets/IMG-20250426-WA0000(2).jpg" onclick="elegirPersonaje(this.src)" style="width:150px; height:150px; cursor:pointer; border-radius:50%; border: 4px solid #00FFCE; object-fit:cover; transition: transform 0.3s;">
+  </div>
+</div>
+
+<script>
+  function mostrarSelector() {
+    document.getElementById('selectorPersonaje').style.display = 'block';
+  }
+
+  function elegirPersonaje(src) {
+    localStorage.setItem('personajeSeleccionado', src);
+    window.location.href = 'juego.html';
+  }
+</script>
+</body>
+</html>
