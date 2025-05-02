@@ -2,89 +2,83 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Aprender de Wikipedia</title>
+  <title>StreetWorld - Login</title>
+  <!-- Fuente Orbitron para botones e inputs -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Orbitron', sans-serif;
+      background-color: #000;
+      color: white;
+      text-align: center;
+      padding: 50px;
+    }
+    .titulo-principal {
+      font-size: 48px;
+      margin-bottom: 40px;
+    }
+    .login-box {
+      margin: auto;
+      max-width: 400px;
+      background: #111;
       padding: 20px;
+      border-radius: 10px;
     }
-    input {
-      padding: 10px;
-      font-size: 16px;
-      width: 100%;
-      margin-top: 10px;
-      box-sizing: border-box;
-    }
-    label {
-      margin-top: 15px;
+    .input-field {
       display: block;
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
     }
-    button {
+    .btn, .btn-secundario {
       padding: 10px 20px;
-      background-color: #4CAF50;
+      margin: 5px;
+      background-color: #444;
       color: white;
       border: none;
       cursor: pointer;
-      margin-top: 20px;
     }
-    button:hover {
-      background-color: #45a049;
+    .ranking-btn, .perfil-btn {
+      position: fixed;
+      top: 10px;
+      padding: 10px;
+      background-color: #222;
+      color: white;
+      border: none;
     }
-    .loading {
-      margin-top: 20px;
-      color: #4CAF50;
+    .ranking-btn {
+      left: 10px;
+    }
+    .perfil-btn {
+      right: 10px;
     }
   </style>
 </head>
 <body>
-  <h1>Aprende automáticamente desde Wikipedia</h1>
 
-  <!-- Input solo lectura con sugerencia -->
-  <label for="sugerenciaInput">Sugerencia automática:</label>
-  <input type="text" id="sugerenciaInput" readonly />
+  <!-- Botones flotantes -->
+  <button class="ranking-btn">Ranking</button>
+  <button class="perfil-btn">Perfil</button>
 
-  <!-- Input editable del usuario -->
-  <label for="usuarioInput">Escribe tu propio tema (opcional):</label>
-  <input type="text" id="usuarioInput" placeholder="Puedes escribir un tema aquí..." />
+  <!-- Contenido principal -->
+  <div class="main-content">
 
-  <div class="loading" id="loadingText" style="display:none;">Buscando tema...</div>
+    <!-- Título gigante -->
+    <h1 class="titulo-principal">StreetWorld Finals</h1>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', async function () {
-      const sugerenciaInput = document.getElementById('sugerenciaInput');
-      const usuarioInput = document.getElementById('usuarioInput');
-      const loadingText = document.getElementById('loadingText');
+    <!-- Caja de login -->
+    <div class="login-box">
+      <input type="text" class="input-field" placeholder="Nombre de Usuario">
+      <input type="password" class="input-field" placeholder="Contraseña">
+      <button class="btn">Login</button>
+      <button class="btn">Registrarse</button>
+    </div>
 
-      // Obtener sugerencia desde el backend
-      const res = await fetch('/api/learnFromWikipedia');
-      const data = await res.json();
-      const sugerencia = data.sugerencia || '';
+    <!-- Botones sueltos -->
+    <button class="btn-secundario">Jugar como Invitado</button>
+    <button class="btn-secundario">Clasificatoria</button>
 
-      sugerenciaInput.value = sugerencia;
+  </div>
 
-      // Esperar 10 segundos y luego buscar
-      setTimeout(async () => {
-        loadingText.style.display = 'block';
-
-        const valorUsuario = usuarioInput.value.trim();
-        const temaFinal = valorUsuario || sugerencia;
-
-        if (!temaFinal) {
-          alert('No hay tema para buscar');
-          return;
-        }
-
-        try {
-          const buscar = await fetch(`/api/learnFromWikipedia?topic=${encodeURIComponent(temaFinal)}`);
-          const resultado = await buscar.json();
-          alert(resultado.mensaje || 'Búsqueda completada');
-        } catch (err) {
-          alert('Error al buscar el tema');
-        } finally {
-          loadingText.style.display = 'none';
-        }
-      }, 10000); // 10 segundos
-    });
-  </script>
 </body>
 </html>
